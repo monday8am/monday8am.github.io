@@ -1,6 +1,9 @@
-# Greenfoot platform based games #
-
-JULY 9, 2012
+---
+layout: post
+title:  "Greenfoot platform based games!"
+date:   2012-06-09 21:35:44 +0200
+categories: blog
+---
 
 After the publication of the roadmap for the Adobe Flash platform everyone is aware that the platform and therefore developers will have two (and only two) addresses defined: games and streaming video. For this reason in recent months have come to light multiple frameworks for game development AS3: Starling, PushButton, FlashPunk, Flixel among others. But these frameworks are relatively new and few code examples.
 
@@ -13,7 +16,5 @@ The task would be to make a translation Greenfoot libraries to AS3, and then tra
 - Ping Pong
 
 Given the similarity of the language, it will be much more profitable to do the translation code from scratch. As an example we can put the translation of the classic Bubble Shooter:
-
-
 
 After translating my *own* and *unreliable* [version](https://github.com/monday8am/BubbleShooter_FLA/tree/initial_dev/src/com/monday8am/greenfoot) of the framework, we use this code as a base for a game portal for a major food firm in a commercial project. And the result was as follows:
