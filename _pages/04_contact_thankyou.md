@@ -12,6 +12,6 @@ I really appreciate that you’ve taken the time to write me. I’ll get back to
 
 Cheers,
 
-Fri.
+Anton.
 
 [articles]: /articles

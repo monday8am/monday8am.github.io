@@ -29,5 +29,3 @@ exclude: true
     {% endif %}
   {% endfor %}
 </ul>
-
-<!-- Subscribe [via RSS]({{ "/feed.xml" | prepend: site.baseurl }}) -->

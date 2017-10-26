@@ -10,7 +10,7 @@ exclude: false
 
 Like something I wrote? Have a suggestion for an article, things to share about, or even work? Let me know!
 
-<form method="POST" action="https://www.formingo.co/submit/fri@frirasyidi.com">
+<form method="POST" action="https://monday8am.com/submit/angel.antonfri@monday8am.com">
   <div>
     <label for="name">Name</label><br/>
     <input type="text" name="name" placeholder="How should I call you?" required>
@@ -23,11 +23,11 @@ Like something I wrote? Have a suggestion for an article, things to share about,
     <label for="message">Message</label><br/>
     <textarea name="message" placeholder="You can start by saying 'Hi!'. ;-)" required></textarea>
   </div>
-  <input type="hidden" name="__subject" value="New contact from frirasyidi.com">
-  <input type="hidden" name="__redirect" value="http://frirasyidi.com/contact/thank-you">
+  <input type="hidden" name="__subject" value="New contact from monday8am.com">
+  <input type="hidden" name="__redirect" value="http://monday8am.com/contact/thank-you">
   <button type="submit">Send Message</button>
 </form>
 
-<small>*You can also email me directly at [fri@frirasyidi.com][frimail]. :-)</small>
+<small>*You can also email me directly at [angel.anton@monday8am.com][email]. :-)</small>
 
-[frimail]:  mailto:fri@frirasyidi.com
+[email]:  mailto:angel.anton@monday8am.com
