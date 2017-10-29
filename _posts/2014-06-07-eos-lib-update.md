@@ -102,11 +102,8 @@ To transfer the native bitmap to the bitmap passed by the runtime, the ANE tries
 
 Currently the project is unsupported.
 
-
 ### Related links:
-[Github CanonEOS CPP][github_code]
 
-[Canon EosLib description post][canoneos_lib]
+[Github CanonEOS CPP](https://github.com/monday8am/CanonEOS_CPP)
 
-[github_code]: https://github.com/monday8am/CanonEOS_CPP
-[canoneos_lib]: http://www.monday8am.com/2012/05/29/canoneos_lib_extension/
+[Canon EosLib description post](http://monday8am.com/blog/2012/05/29/eos-lib.html)

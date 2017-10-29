@@ -13,9 +13,9 @@ My name is Angel Anton and I'm a software engineer based in Madrid, Spain.
 
 I work as senior mobile developer for [Fidesmo][Fidesmo] and my job is to lead the mobile strategy of the company.
 
-My prefered languages right now are **Swift** and **Kotlin**. I used to loved multiplatform solutions, so I did a lot of Xamarin and Flash in the past.
+My prefered languages right now are **Swift** and **Kotlin**. I used to love multiplatform solutions, so I did a lot of Xamarin and Flash in the past.
 
-I have some tendence to use functional programming concepts. I like Reactive Programming, unidirectional architectures and in the future, I want to learn Elm.
+I have some tendence to use functional programming concepts. I like Reactive Programming, unidirectional architectures. Next language I'd love to learn: [Elm](http://elm-lang.org/).
 
 Aside from being a developer, I feel at ease using Sketch or Photoshop and I consider myself an **UI** guy. My favourite color scheme is [Solarized][Solarized].
 
@@ -28,10 +28,11 @@ I also cycle and I'm a proud owner of three steel road bikes! :-)
 * Mobile Team Lead [Toggl][Toggl], <time>Aug 2014 to Aug 2016</time>
 * Mobile Dev Freelance, <time>Jan 2012 to Sep 2014</time>
 * Flash Lead Dev [Tecknosfera][Tecknosfera], <time>Nov 2009 to Jan 2012</time>
-* Flash Dev [Wyiwyg][Wyiwyg], <time>Jan 2009 to Nov 2009</time>
+* Flash Dev [Wysiwyg][Wysiwyg], <time>Jan 2009 to Nov 2009</time>
 
 [Fidesmo]:    https://www.fidesmo.com
+[Placest]: http://www.placest.com
 [Toggl]:   http://www.toggl.com
 [Tecknosfera]:   http://www.tecknosfera.com
-[Wyiwyg]: http://www.wysiwyg.es/home.html
+[Wysiwyg]: http://www.wysiwyg.es/home.html
 [Solarized]: http://www.wysiwyg.es/home.html
