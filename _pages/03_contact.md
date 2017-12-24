@@ -10,7 +10,7 @@ exclude: false
 
 Like something I wrote? Have a suggestion for an article, things to share about, or even work? Let me know!
 
-<form method="POST" action="https://monday8am.com/submit/angel.antonfri@monday8am.com">
+<form action="https://formspree.io/angel.anton@gmail.com" method="POST">
   <div>
     <label for="name">Name</label><br/>
     <input type="text" name="name" placeholder="How should I call you?" required>
