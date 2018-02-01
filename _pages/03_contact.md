@@ -2,15 +2,15 @@
 layout: page
 title: Contact
 permalink: /contact/
-date:   2016-11-20
-update: 2017-07-01
+date:   2017-11-20
+update: 2018-01-31
 exclude: false
 ---
 # Contact Me
 
 Like something I wrote? Have a suggestion for an article, things to share about, or even work? Let me know!
 
-<form action="https://formspree.io/angel.anton@gmail.com" method="POST">
+<form action="https://formspree.io/hello@gmail.com" method="POST">
   <div>
     <label for="name">Name</label><br/>
     <input type="text" name="name" placeholder="How should I call you?" required>
@@ -28,6 +28,6 @@ Like something I wrote? Have a suggestion for an article, things to share about,
   <button type="submit">Send Message</button>
 </form>
 
-<small>*You can also email me directly at [angel.anton@monday8am.com][email]. :-)</small>
+<small>*You can also email me directly at [hello@monday8am.com][email]. :-)</small>
 
-[email]:  mailto:angel.anton@monday8am.com
+[email]:  mailto:hello@monday8am.com
