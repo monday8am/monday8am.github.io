@@ -9,19 +9,13 @@ exclude: false
 
 # About Me
 
-My name is Angel Anton and I'm a software engineer based in Madrid, Spain.
+I'm a software engineer based in Madrid, Spain.
 
-I work as senior mobile developer for [Fidesmo][Fidesmo] and my job is to lead the mobile strategy of the company.
+I work as senior mobile developer at [Fidesmo][Fidesmo] using  **Swift** and **Kotlin** for both iOS and Android platforms. I like Reactive Programming, unidirectional architectures and I would love to learn [Elm](http://elm-lang.org/).
 
-My prefered languages right now are **Swift** and **Kotlin**. I used to love multiplatform solutions, so I did a lot of Xamarin and Flash in the past.
+ My favourite color scheme is [Solarized][Solarized] and I'm a proud owner of three steel road bikes! :-)
 
-I have some tendence to use functional programming concepts. I like Reactive Programming, unidirectional architectures. Next language I'd love to learn: [Elm](http://elm-lang.org/).
-
-Aside from being a developer, I feel at ease using Sketch or Photoshop and I consider myself an **UI** guy. My favourite color scheme is [Solarized][Solarized].
-
-I also cycle and I'm a proud owner of three steel road bikes! :-)
-
-<h2 id="timeline">Timeline</h2>
+## Timeline
 
 * Senior Mobile Dev [Fidesmo][Fidesmo], <time>April 2017 to present</time>
 * Dev Consultant for [Placest][Placest], <time>Nov 2016 to April 2017</time>
