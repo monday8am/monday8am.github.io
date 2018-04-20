@@ -7,15 +7,15 @@ categories: blog
 
 ### Preface
 
-Sometimes at the moment of create an app, you have to introduce some complexity in order to keep the global code base simpler.
+Sometimes when developing an app, you need to introduce some complexity in order to keep your code neat and clean.
 
-Applying this concept to a bicicle I think in an [internal-gear hub](https://en.wikipedia.org/wiki/Hub_gear) part: the interaction with it is very easy (only one spoke) and makes the life easier if you stop-and-go when commuting in a big city. On the other hand, it is a complex and expensive component.
+Applying this idea to a bicycle, an [internal-gear hub](https://en.wikipedia.org/wiki/Hub_gear) part comes to my mind: the interaction with it is simple and makes life easier if you stop-and-go when commuting in a big city. On the other hand, it is a complex and expensive component.
 
-Curiosly, the same example can be found inside [Fidesmo](http://fidesmo.com/) app codebase.
+Curiously, the same example can be found inside [Fidesmo](http://fidesmo.com/) app codebase:
 
 ### The easy interaction
 
-We use a version of the _Either<_**A**_,_**B**_>_ pattern redefined as _Result<_**T**_,_**E**_>_ . Popular in languages like Scala, Elm or Rust, it is fantastic because it wraps a value of type **T** inside a "request context", where **E** is the error obtained if the request fails. Although you can find [many implementations](https://github.com/michaelbull/kotlin-result) around, let's type a simple one:
+We use a version of the _Either<_**A**_,_**B**_>_ pattern redefined as _Result<_**T**_,_**E**_>_. Popular in languages like Scala, Elm or Rust, it is fantastic because it wraps a value of type **T** inside a "request context", where **E** is the error obtained if the request fails. Although you can find [many implementations](https://github.com/michaelbull/kotlin-result) around, let's type a simple one:
 
 {% gist 02cc2ae467845e1ef8ecacfaa56bcca9 %}
 
@@ -23,13 +23,13 @@ We use a version of the _Either<_**A**_,_**B**_>_ pattern redefined as _Result<_
 
 As we are using a [Redux like architecture](/blog/2018/03/30/unidirectional.html) inside Fidesmo app, the _Result<_**A**_,_**B**_>_ is part of our state and it must be **serialized**!! 😱
 
-How to serialize a sealed class with generics in Kotlin? In theory, we should add a custom adapter to the Google Gson lib that let's us customize the JSON (de)codification. This adapter could have the follow structure:
+How to serialize a sealed class with generics? In theory, we should add a custom adapter to the Google Gson lib that let's us customize the JSON (de)codification. This adapter could have the follow structure:
 
 {% gist 8370a8f1f3135c32d6c358b1065770c2 %}
 
 #### Result<T, E> detection
 
-In order to pass the previous serializer to the Gson implementation, we need something that detects the whole hierarchy of our sealed class: _Result.Loading_, _Result.Ok<_**T**_>_ or _Result.Err<_**E**_>_. 
+In order to pass the previous serializer to the Gson implementation, we need something that detects the whole hierarchy of our sealed class: _Result.Loading_, _Result.Ok<_**T**_>_ or _Result.Err<_**E**_>_.
 
 And _voilá_, The `registerTypeHierarchyAdapter` comes to help us:
 
@@ -49,7 +49,9 @@ Ok, fasten your seat-belts:
 
 ### Conclusions
 
-Make an application (or software in general) is matter of decisions, most of them are not trancendentals but seen together as a whole can lead your code to a land of pleasure full of unicorns or to the terrible hell. About this case, the introduction of a complex module in benefict of the overall simplicity is a good one :)
+Making an application (or software in general) is a matter of decisions, most of them are not transcendental but seen together as a whole can lead your code to a land of pleasure full of unicorns or to terrible hell.
+
+In our case, the introduction of a complex module in benefit of the overall simplicity is a good one though :)
 
 #### Links
 
