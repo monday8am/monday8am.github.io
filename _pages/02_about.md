@@ -3,7 +3,7 @@ layout: page
 title: About
 permalink: /about/
 date:   2016-11-20
-update: 2017-10-26
+update: 2018-10-26
 exclude: false
 ---
 
@@ -29,4 +29,4 @@ I work as senior mobile developer at [Fidesmo][Fidesmo] using  **Swift** and **K
 [Toggl]:   http://www.toggl.com
 [Tecknosfera]:   http://www.tecknosfera.com
 [Wysiwyg]: http://www.wysiwyg.es/home.html
-[Solarized]: http://www.wysiwyg.es/home.html
+[Solarized]: https://ethanschoonover.com/solarized/
