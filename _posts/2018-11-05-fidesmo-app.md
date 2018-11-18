@@ -31,7 +31,8 @@ The app is integrated into a continuos integration pipeline built over _Travis_,
 - Content creation
 - UX/UI design collaboration
 
-### Related articles
+### Related links
 
+- [Fidesmo app at Google Play](https://play.google.com/store/apps/details?id=com.fidesmo.sec.android&hl=es)
 - [Unidirectional flow to tame the state](http://monday8am.com/blog/2018/03/30/unidirectional.html)
 - [Fastlane and Git working together](http://monday8am.com/blog/2018/02/15/fastlane.html)
