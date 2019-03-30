@@ -26,6 +26,7 @@ Considering both tools, an interesting approach for Android is to define small t
 
 # Gradle and Gradle
 
+Why we need to use 2 automation tools and not to use Gradle for everthing? Well, it depend on the context.
 
 
 ### Conclusions
