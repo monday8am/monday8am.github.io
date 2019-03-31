@@ -17,7 +17,7 @@ The app opens a _https_ channel to the server together with a _NFC_ or _BLE_ cha
 
 ### UX/UI
 
-One of the main challenges is that the app is used by engineers testing experimental services, customers using production services and by random users that buy and test Fidesmo enabled devices. The UI/UX design should be enough flexible to hold a broad spectrum of user-cases.
+One of the main challenges is that the app is used by engineers testing experimental services, customers using production services and by random users that buy and test Fidesmo enabled devices. The UI/UX design should be enough flexible to hold a broad spectrum of user-cases. A big part of this interface is generated [on-the-fly](https://developer.fidesmo.com/documentation/user-interaction) using the UI information that comes from API and letting service providers to change their services flow without make any change in the Android app.
 
 ![Screenshot]({{ "/assets/projects/fidesmo-ui.png" | absolute_url }})
 
