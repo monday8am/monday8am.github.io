@@ -11,6 +11,6 @@ It was the company culture that convinced me to don't give up. After the first g
 
 My main challenge was not to create the most complex algorithm or understand intrincated map interactions, but create an strategy to transform an old codebase into a modern one. And apply it step by step, without interrupting the feature development, respecting the team adoption times, negotiating the deepness of the advances and promoting faster and optimal solutions to replace the old ones.
 
-And it is the most important learning I got from a beautiful and exiting period: **fight for transforming what you don't like into a better thing, that's a valid and necessary engineering challenge.**
+And it is the most important learning I got from a beautiful and exiting period: *fight for transforming what you don't like into a better thing, that's a valid and necessary engineering challenge.*
 
 I'll miss komoot for so many great moments and the amazing people I met — farewell to my first dream job.
