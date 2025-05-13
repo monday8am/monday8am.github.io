@@ -31,41 +31,23 @@ After a lot of hard work finishing and polishing the feature, it performed excep
 Today, **the codebase has over 70 modules**, including **30 feature modules**. Jetpack architecture (ViewModel, Compose, DI) is now standard across the team. *Most importantly, the team defined a shared “North Star” architecture and has consistently moved toward it*.
 
 
-## Strategy
+## The Plan
 
 **How do I trigger a global scale refactoring and develop a feature at the same time?** 
 
+The goal was to define a minimal and optimized list of actions that permit us to create a favorable context for a fast Compose feature development, and at the same time, introduce improvements with global impact. Those actions had to be executed one by one to reduce risks and if possible, have measurable outputs. Based on the critical needs on both app and feature levels, I defined the following list to be executed in cascade:
 
-### My Approach
+1. **Introduce a dependency injection framework** (Hilt) that improves code quality at a global scale and permits moving dependencies to different modules, unblocking a module split action.
 
-- **Define a minimal, prioritized list of actions** that would:
-    - Enable fast Compose feature development
-    - Introduce high-leverage improvements at scale
-- Each action was designed to:
-    - Be executable independently but in cascade
-    - Minimize risk
-    - Provide measurable outcomes
+1. **Extract a feature module**: At a global scale, solves the problem of a main module constantly growing. For feature development, reduces the compilation time drastically improving the use of Compose previews. Besides, isolates the new code and permits feature sample apps, accelerating the development even more. 
 
----
+1. **Create UI in Compose**: At a global scale, add an incipient design system module with core UI components. Besides, introduces a change in the data management paradigm from an imperative to a reactive approach, causing a necessary update in the upper layers. At the feature level, speed up the development.
 
-### The Plan
-
-1. **Introduce a dependency injection framework (Hilt)**
-    - **Global:** Improved modularity and testability
-    - **Feature:** Enabled clean injection across new modules
-2. **Extract the feature into its own module**
-    - **Global:** Broke the main module’s unsustainable growth
-    - **Feature:** Drastically reduced compilation time, improved Compose preview performance, and enabled standalone testing
-3. **Develop UI in Jetpack Compose**
-    - **Global:** Introduced design system components and shifted data flow toward reactive paradigms
-    - **Feature:** Allowed for faster development cycles and modern UI patterns
-4. **Refactor upper layers**
-    - **Global:** Added coroutine flow receipts and mappers between existing old Java models and new optimized Kotlin data classes
-    - **Feature:** Showcased a full unidirectional data flow architecture
+1. **Rewrite the upper layers**: The existing models and data sources were written in Java and translated to Kotlin, making them hard to reuse. It motivated an encapsulation of the network layer with mappers and interfaces and rewrote the data layer using coroutine flows.
 
 ---
 
-### How Did We De-risk the Process?
+## How Did We De-risk the Process?
 
 - **Team adoption:** Ran workshops, presentations, and Q\&A sessions to reduce resistance, foster understanding, and increase ownership
 - **Controlled refactoring:** Each step was executed sequentially to limit blast radius and quickly identify regressions
