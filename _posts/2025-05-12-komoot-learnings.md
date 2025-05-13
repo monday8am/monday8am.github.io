@@ -45,8 +45,6 @@ The goal was to define a minimal and optimized list of actions that permit us to
 
 1. **Rewrite the upper layers**: The existing models and data sources were written in Java and translated to Kotlin, making them hard to reuse. It motivated an encapsulation of the network layer with mappers and interfaces and rewrote the data layer using coroutine flows.
 
----
-
 ## How Did We De-risk the Process?
 
 - **Team adoption:** Ran workshops, presentations, and Q\&A sessions to reduce resistance, foster understanding, and increase ownership
