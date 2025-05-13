@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Komoot learnigs"
+title:  "Komoot learnings"
 date:   2025-05-12 09:30:00 +0100
 categories: blog
 ---
