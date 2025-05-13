@@ -58,12 +58,13 @@ The goal was to define a minimal and optimized list of actions that permit us to
 The project was scoped with a dual objective: deliver the feature and lay the groundwork for long-term improvements. 
 
 To do so, I negotiated an initial three-week shaping phase—a rare opportunity to build infrastructure and isolate the new module before feature work began. And fortunately this paid off: development proceeded faster than expected, driven by:
-	•	High team motivation.
-	•	A modern stack.
-	•	Significantly shorter build times due to modularization.
-    •	A dedicated app to run the feature
 
-For the broader architecture shift, we viewed it as a multi-phase journey. The feature served as a proof of concept. Full adoption would take months or even years, but we had a foundation and direction.
+* 	High team motivation.
+* 	A modern stack.
+* 	Significantly shorter build times due to modularization.
+*  A dedicated app to run the feature
+
+For the broader architecture shift, we viewed it as a multi-phase journey. The feature served as a proof of concept. Full adoption would take months or even years, **but we had a foundation and direction**.
 
 ## Learnings
 
