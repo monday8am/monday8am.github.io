@@ -5,7 +5,6 @@ date:   2021-11-21 21:12:00 +0100
 categories: blog
 ---
 
-### Storybeat tales
 
 [Storybeat](https://www.storybeat.com/) is a popular video editor packed with templates, filters, and creative tools. When I joined the team (just two developers), the app was a basic MVP built on top of [FFmpeg](https://github.com/tanersener/mobile-ffmpeg): too slow when rendering videos and with no real path for future evolution. The challenge was to rewrite it from scratch, improving rendering times and adding a real video editor.
 
