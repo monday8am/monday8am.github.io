@@ -129,6 +129,8 @@ rawAssetLoader.queueInputTexture(textureId, presentationTimeUs)
 
 This texture now represents a video frame and will be encoded by Media3 Transformer.
 
+---
+
 ### Step 4: Decode and Enqueue Audio
 
 In parallel, we decode audio from a URI into raw PCM chunks using a custom `AudioDecoder`. Each chunk is queued manually into the asset loader:
@@ -140,6 +142,8 @@ rawAssetLoader.queueAudioData(audioChunk, presentationTimeUs, isLast)
 ```
 
 Synchronization between video frames and audio chunks is manual — but simple, since you’re in full control.
+
+---
 
 ### Bringing It All Together
 
