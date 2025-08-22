@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Exporting a Lottie Animation to Video with Audio Using Media3"
+title:  "Exporting a Lottie Animation to Video Using Media3"
 date:   2025-08-21 15:12:00 +0100
 categories: blog
 ---
