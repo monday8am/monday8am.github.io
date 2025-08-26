@@ -39,6 +39,7 @@ This function:
 * Adds an audio track via raw PCM decoding
 * Outputs a complete `.mp4` file
 
+---
 
 ### The Problem: Bridging Two Worlds
 
@@ -73,7 +74,9 @@ The `RawAssetLoader` gives you full manual control over how video and audio data
   RawAssetLoaderFactory(
     audioFormat = audioFormat,
     videoFormat = videoFormat,
-    onRawAssetLoaderCreated = { loader -> rawAssetLoaderDeferred.complete(loader) }
+    onRawAssetLoaderCreated = { loader -> 
+      rawAssetLoaderDeferred.complete(loader) 
+    }
   )
 )
 ```
@@ -125,7 +128,6 @@ rawAssetLoader.queueInputTexture(textureId, presentationTimeUs)
 
 This texture now represents a video frame and will be encoded by Media3 Transformer.
 
----
 
 ### Decode and Enqueue Audio
 
@@ -138,8 +140,6 @@ rawAssetLoader.queueAudioData(audioChunk, presentationTimeUs, isLast)
 ```
 
  The audio chunks can be read from a local audio file in the traditional, using a `MediaExtractor`, a `MediaCodec` and creating a pipeline of small bufferes that are extracted, decoded and then passd to the `RawAssetLoader`'s callback. Synchronization between video frames and audio chunks is manual — but simple, since you’re in full control.
-
----
 
 ### Bringing It All Together
 
@@ -163,11 +163,12 @@ launch {
 }
 ```
 
-I have used the coroutine `CompletableDeferred` calls as semaphores to suspend the thread and wait for the corresponding results in a typesafe way: the _assetLoaderDeferred_, _a_waitReadyForInput_ and _awaitForLastImage_ controls the flow and makes the whole operation a suspend function. This design also makes it easy to wrap the process inside a use case that emits a Flow of results.
+In the example code, I have used the coroutine `CompletableDeferred` calls as semaphores to suspend the thread and wait for the corresponding results in a typesafe way. This design also makes it easy to wrap the process inside a use case that emits a Flow of results.
 
-The full solution can be found in the repository:
+The full solution can be found in the Github repository:
 [LottieRecorder](https://github.com/monday8am/lottierecorder)
 
+---
 
 ### Why This Approach Works
 
@@ -179,14 +180,13 @@ The full solution can be found in the repository:
 
 ### Future Improvements
 
-* Add progress reporting (`onProgress: (Float) -> Unit`)
-* Use a `SurfaceTexture` + GL rendering instead of `Canvas` for full GPU control
+* Use a `SurfaceTexture` bound to an OES external texture, draw to its `Surface` with lockHardwareCanvas(), then sample that external texture directly in GL for near zero-copy (no CPU readbacks)—but expect trickier setup/synchronization and test broadly.
 * Investigate using [Skottie (Skia GPU Lottie renderer)](https://skia.org/docs/user/modules/skottie/) for even faster native rendering
 
 
 ### References
 
-- [Functional LottieRecorder](https://github.com/monday8am/lottierecorder)
+- [LottieRecorder: Repository of functional example ](https://github.com/monday8am/lottierecorder)
 - [Media3 Transformer API](https://developer.android.com/media/transformer/overview)
 - [Airbnb Lottie Android](https://airbnb.io/lottie/#/)
 - [ImageReader API](https://developer.android.com/reference/android/media/ImageReader)
