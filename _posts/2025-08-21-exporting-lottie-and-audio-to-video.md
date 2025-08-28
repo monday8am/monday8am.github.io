@@ -59,10 +59,7 @@ The missing link is **`ImageReader`**. It gives us a Surface that:
 
 This makes it the perfect bridge between the CPU-based Lottie drawing world and the GPU-based Media3 encoding pipeline.
 
-LottieDrawable --draws to--> ImageReader.surface (via lockHardwareCanvas)
-ImageReader --outputs--> Image (GPU-compatible)
-Image --uploaded to--> GL Texture
-Texture --queued to--> RawAssetLoader --encoded by--> Media3 Transformer
+![Screenshot]({{ "/assets/img/lottie-flow.png" | absolute_url }})
 
 
 ### Control Everything with `RawAssetLoader`
