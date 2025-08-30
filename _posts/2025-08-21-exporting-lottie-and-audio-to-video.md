@@ -51,7 +51,7 @@ The solution to exporting Lottie animations with audio using Media3 comes down t
 
 But how do you go from a `LottieDrawable` — something that draws on a Canvas — to an OpenGL texture ID that Media3 can encode?
 
-The missing link is **`ImageReader`**. It gives us a Surface that:
+The missing link is **`ImageReader`**. It provides a Surface that:
 
 * Can be drawn to using lockHardwareCanvas() (GPU-accelerated)
 
@@ -136,7 +136,7 @@ val (audioChunk, presentationTimeUs) = awaitForAudioChunk.await()
 rawAssetLoader.queueAudioData(audioChunk, presentationTimeUs, isLast)
 ```
 
- The audio chunks can be read from a local audio file in the traditional, using a `MediaExtractor`, a `MediaCodec` and creating a pipeline of small bufferes that are extracted, decoded and then passd to the `RawAssetLoader`'s callback. Synchronization between video frames and audio chunks is manual — but simple, since you’re in full control.
+ The audio chunks can be read from a local audio file using the `MediaExtractor` and the `MediaCodec` APIs and creating a pipeline of small bufferes that are extracted, decoded and then passd to the `RawAssetLoader`'s callback. Synchronization between video frames and audio chunks is manual — but simple, since you’re in full control.
 
 ### Bringing It All Together
 
@@ -160,10 +160,11 @@ launch {
 }
 ```
 
-In the example code, I have used the coroutine `CompletableDeferred` calls as semaphores to suspend the thread and wait for the corresponding results in a typesafe way. This design also makes it easy to wrap the process inside a use case that emits a Flow of results.
-
 The full solution can be found in the Github repository:
 [LottieRecorder](https://github.com/monday8am/lottierecorder)
+
+In the example code, I have used `CompletableDeferred` interfaces as semaphores to suspend the thread and wait for the corresponding results in a typesafe way. It removes some callbacks and makes the code easier to wrap inside a use case that returns a coroutine Flow.
+
 
 ---
 
@@ -173,7 +174,7 @@ The full solution can be found in the Github repository:
 * `ImageReader` is optimized for canvas-to-texture use
 * `lockHardwareCanvas()` ensures GPU memory drawing
 * `LottieDrawable` already handles GPU rendering internally when used on a hardware canvas
-
+* The solution uses as less custom code as possible, making easier to maintain across multiple device models
 
 ### Future Improvements
 
@@ -183,7 +184,7 @@ The full solution can be found in the Github repository:
 
 ### References
 
-- [LottieRecorder: Repository of functional example ](https://github.com/monday8am/lottierecorder)
+- [LottieRecorder: Functional example repo](https://github.com/monday8am/lottierecorder)
 - [Media3 Transformer API](https://developer.android.com/media/transformer/overview)
 - [Airbnb Lottie Android](https://airbnb.io/lottie/#/)
 - [ImageReader API](https://developer.android.com/reference/android/media/ImageReader)
