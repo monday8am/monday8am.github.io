@@ -123,7 +123,7 @@ It may sound incredible, but building a simple prototype with a significant part
 
 The [current implementation](https://github.com/monday8am/koogagent) contains a simple screen for downloading the model from a static link, changing some parameters and prompting the downloaded model. It demonstrates the notification engine can ‘_think locally_’ before speaking. The output is a text and a notification message.
 
-Prototype snapshots
+![Screenshot]({{ "/assets/img/koog-prototype.png" | absolute_url }})
 
 ### Reflections & Trade-offs:
 
