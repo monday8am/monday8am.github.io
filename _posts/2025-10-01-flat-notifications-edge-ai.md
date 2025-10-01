@@ -5,8 +5,6 @@ date:   2025-10-01 14:23:00 +0100
 categories: blog
 ---
 
-### _A Yazio-Inspired Experiment with an agentic framework, local model inference and a small language model_
-
 ### Introduction
 
 For the last few weeks I have been testing the [**Yazio**](https://www.yazio.com/) app, a calorie counter. While using it, I noticed that the notifications — though helpful — were sometimes similar and easy to ignore. This observation sparked a question:
@@ -36,11 +34,17 @@ Behavioural psychology suggests that _timing, tone, and context_ deeply affect h
 
 A notification like:
 
-> Time for a snack?
+```text
+Time for a snack?
+```
 
 vs.
 
-> Nice pace today. Since lunch is logged, a quick summer bite — gazpacho or yogurt with peach — will keep you moving 💪”
+```text
+Nice pace today. Since lunch is logged, a quick 
+summer bite — gazpacho or yogurt with peach — will 
+keep you moving 💪
+```
 
 It could feel more personal and relevant — not by guessing, but by _responding to context_. Not quite like your mom, but better than a static reminder.
 
@@ -95,14 +99,14 @@ Both the input context and the output answer can be described in DTOs
 userLocale: string (e.g., es-ES)
 country: string (e.g., ES)
 mealType: enum {BREAKFAST, LUNCH, DINNER, SNACK, WATER}
-alreadyLogged: { breakfast: bool, lunch: bool, dinner: bool, snack: bool, waterTodayMl: int }
+alreadyLogged: { breakfast: bool, lunch: bool... }
 timeNow: ISO datetime
-quietHours: { startLocal: string, endLocal: string, enabled: bool }
-weather: { condition: enum, tempC: number, feelsLikeC: number, rainChancePct: number }
+quietHours: { startLocal: string, endLocal: string }
+weather: { condition: enum, tempC: number, feelsLikeC: number }
 season: enum {WINTER, SPRING, SUMMER, AUTUMN}
-localDishes: array of { name: string, mealTypes: enum[], tags: string[], region: string }
+localDishes: array of { name: string, mealTypes: enum[], }
 motivationLevel: enum {LOW, MEDIUM, HIGH}
-dietaryTags: array of strings (optional: vegan, halal, celiac, lactose-free)
+dietaryTags: array of strings (optional: vegan, halal...)
 recentStreakDays: int
 ```
 
