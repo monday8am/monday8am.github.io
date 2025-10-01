@@ -53,7 +53,12 @@ Hardcoding these messages isn’t scalable, but solving problems of generated la
 ![Screenshot]({{ "/assets/img/koog-agentic-flow.png" | absolute_url }})
 
 ```mermaid
-flowchart LR UA[User Action] → C[Context Gathering] C → AT[Agent Task Orchestration] AT → LLM[LLM / SLM Inference] LLM → R[Response / Tool Call / Output] R → UA
+flowchart LR
+    UA[User Action] --> C[Context Gathering]
+    C --> AT[Agent Task Orchestration]
+    AT --> LLM[LLM / SLM Inference]
+    LLM --> R[Response / Tool Call / Output]
+    R --> UA
 ```
 
 Koog provides connectors for accessing to data using [Model Context Protocol](https://www.anthropic.com/news/model-context-protocol) (MCP) and common large language model APIs, orchestrating tools and decisions around a model. In this experiment, Koog triggers an agent on notification receipt, assembles user and device context, generates a response, and applies safety post‑processing
