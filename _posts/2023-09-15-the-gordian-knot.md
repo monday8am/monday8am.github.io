@@ -5,13 +5,14 @@ date:   2023-09-15 19:40:00 +0100
 categories: blog
 ---
 
+![Screenshot]({{ "/assets/img/alexander-gordian-knot.webp" | absolute_url }})
 
-> Legend tells of Alexander the Great encountering the **Gordian Knot**, an impossibly complex tangle that had defeated all who attempted to unravel it. While others tried to patiently trace each strand, Alexander drew his sword and cut straight through, solving in seconds what had seemed unsolvable for years.
-> 
-> In software engineering, we often face our own Gordian Knots — codebases so tightly coupled that untangling them step by step feels impossible. The conventional wisdom tells us to refactor incrementally, to carefully trace dependencies, to be patient. But sometimes, the most effective solution is to take Alexander’s approach: make a clean cut, isolate what you need, and start fresh. That’s the story of how we modularized Komoot’s Android codebase.
+_Legend tells of Alexander the Great encountering the **Gordian Knot**, an impossibly complex tangle that had defeated all who attempted to unravel it. While others tried to patiently trace each strand, Alexander drew his sword and cut straight through, solving in seconds what had seemed unsolvable for years._
 
+_In software engineering, we often face our own Gordian Knots — codebases so tightly coupled that untangling them step by step feels impossible. The conventional wisdom tells us to refactor incrementally, to carefully trace dependencies, to be patient. But sometimes, the most effective solution is to take Alexander’s approach: make a clean cut, isolate what you need, and start fresh._
 
-# How We Transformed the Komoot Android Codebase
+**That’s the story of how we modularized Komoot’s Android codebase.**
+
 
 ## Introduction
 
@@ -27,9 +28,9 @@ We knew that before we could build Atlas effectively, we needed to restructure o
 
 Before diving into the technical work, we needed to understand our options. Android modularization generally follows two main approaches, and the industry best practice combines both:
 
-[Modularization by layer](url://24) organizes code by technical responsibility — data, domain, and presentation layers. This creates clear boundaries between different types of logic but can lead to feature code being scattered across multiple modules.
+[Modularization by layer](https://developer.android.com/topic/modularization/patterns#common-modules) organizes code by technical responsibility — data, domain, and presentation layers. This creates clear boundaries between different types of logic but can lead to feature code being scattered across multiple modules.
 
-[Modularization by feature](url://25) organizes code around user-facing capabilities. Each feature becomes a self-contained module that can be developed, tested, and even deployed independently. This approach aligns better with how teams are often organized and how users think about applications.
+[Modularization by feature](https://medium.com/clean-android-dev/the-real-clean-architecture-in-android-modularization-e26940fd0a23) organizes code around user-facing capabilities. Each feature becomes a self-contained module that can be developed, tested, and even deployed independently. This approach aligns better with how teams are often organized and how users think about applications.
 
 **The hybrid approach**, which we adopted, combines both strategies. We organized the codebase into four main layers:
 
@@ -52,11 +53,18 @@ This created a circular dependency problem: to modularize features, we needed to
 
 Our solution was surgical but effective:
 
+![Screenshot]({{ "/assets/img/app-komoot-split.webp" | absolute_url }})
+
 1. **Create an interface for the Application class:** We extracted `KomootApplication` as an interface containing only the essential services that the legacy code needed to access. This interface went into a new shared module.
+
 2. **Split the monolith:** We created a new `:app-komoot` module containing only the Android application entry point, and the implementation of `KomootApplication`. The massive `:komoot` module remained as "legacy" but now received the application context through the interface rather than directly accessing the `Application` class.
+
 3. **Migrate to Hilt:** With the structure in place, we gradually introduced Hilt for dependency injection. This was crucial for allowing new modules to declare their dependencies without reaching up through the God object pattern.
+
 4. **Build the first feature module:** The `:feat-atlas` module was created at the same level as `:komoot`, not nested within it. _This was psychologically important_ — it meant that new features would be first-class citizens, not subordinate to the legacy code.
+
 5. **Create supporting infrastructure:** We added `:core-ui-compose` for shared Compose components, `:core-app-navigation` for a simple navigation abstraction, and `:data-*` modules for the data layer. Each module was kept focused and prevented from becoming another monolith.
+
 6. We rested :)
 
 ### Solving Multi-Module Navigation
@@ -65,7 +73,7 @@ One of the trickiest problems was navigation. How do you navigate from the legac
 
 We created a simple navigation interface in the `:core-app-navigation` module. The `:app-komoot` module provides the implementation that knows how to navigate to all features. Individual feature modules only depend on the navigation interface and call methods like `appNav.openAtlas()` without knowing anything about how Atlas is implemented or where it lives in the module graph.
 
-While we considered navigation frameworks like Jetpack Navigation or [Voyager](url://26), we deliberately kept this simple. Modularization was already a significant undertaking — adding a new navigation paradigm at the same time would have been too much complexity at once.
+While we considered navigation frameworks like Jetpack Navigation or [Voyager](https://github.com/adrielcafe/voyager), we deliberately kept this simple. Modularization was already a significant undertaking — adding a new navigation paradigm at the same time would have been too much complexity at once.
 
 ### Gradle Build Files Migration
 
@@ -81,7 +89,7 @@ We didn’t want to rely on subjective feelings about whether modularization was
 
 ### The Benchmarking Plan
 
-Using [Gradle Profiler](url://27), we established baseline measurements on the master branch before any modularization work. We measured several scenarios:
+Using [Gradle Profiler](https://github.com/gradle/gradle-profiler), we established baseline measurements on the master branch before any modularization work. We measured several scenarios:
 
 - **ABI changes:** Modifications that change a module’s public interface, forcing dependent modules to recompile
 - **Non-ABI changes:** Internal changes that don’t affect the module’s interface
@@ -94,12 +102,16 @@ We then ran the same benchmarks on the OKR branch containing our modularization 
 
 Before and after Gradle scans revealed dramatic improvements:
 
+![Screenshot]({{ "/assets/img/gradle-scan-results.webp" | absolute_url }})
+
 - **Build cache effectiveness** improved from **16.8%** to **49%** cached tasks. While some of this was likely due to a Gradle wrapper update, the modular structure made caching far more effective.
 - **Parallelization** became significantly more effective. The task execution timeline showed much better distribution of work across CPU cores.
 
 ### The Numbers
 
 The results exceeded our expectations:
+
+![Screenshot]({{ "/assets/img/gradle-profiler-results.webp" | absolute_url }})
 
 **Build times for `:feat-atlas` were 7x faster than for `:komoot` across all scenarios.** This wasn't a marginal improvement — it was transformational.
 
@@ -114,9 +126,13 @@ All tests in the Atlas module completed in under 9 seconds, including Compose ch
 Modularization changed how our team thinks about code organization:
 
 1. **Start small, establish patterns:** We didn’t try to modularize everything at once. We built one excellent example (Atlas) that demonstrated the benefits and established patterns for others to follow.
+
 2. **Isolation enables velocity:** Feature teams can now work independently without stepping on each other’s toes. When you’re working in `:feat-atlas`, you don't care what's happening in the legacy module.
+
 3. **The mental model shift is real:** Initially, some developers found the module boundaries restrictive. Over time, these boundaries became liberating — they reduce cognitive load and make the impact radius of changes predictable.
+
 4. **Build time improvements compound:** Faster builds mean more iteration cycles, more experiments, more refactoring. The productivity gains are larger than the raw numbers suggest.
+
 5. **Quality over speed:** We focused on doing modularization right rather than fast. Taking time to establish proper navigation abstractions and dependency injection patterns paid dividends as we added more modules.
 
 ## Conclusion
@@ -127,12 +143,11 @@ If you’re facing similar challenges with a monolithic Android codebase, I hope
 
 To **Iwo**, who created Atlas together with me, and the entire Komoot Android team who embraced this change: thank you! :)
 
-Links ￼
- • [Android at Scale — Droidcon](https://www.droidcon.com/2019/11/15/android-at-scale-square/)
- • [A complete journey of Android modularization](https://www.droidcon.com/2022/08/01/a-complete-journey-of-android-modularisation/)
- • [Forging the path from monolith to multimodule app](https://www.droidcon.com/2022/08/01/forging-the-path-from-monolith-to-multi-module-app/)
- • [Improve Android productivity](https://www.droidcon.com/2022/08/03/5-ways-to-improve-your-android-build-productivity/)
- • [Speeding up your Android Gradle builds (Google I/O ’17)](https://www.youtube.com/watch?v=7ll-rkLCtyk&t=1821s&ab_channel=AndroidDevelopers)
- • [Getting started with feature modularization in Android Apps](https://buffer.com/resources/getting-started-with-feature-modularization-in-android-apps/)
- • [The Pitfalls of Preliminary Over-Modularization in Android Projects](https://www.techyourchance.com/preliminary-over-modularization-of-android-projects/)
-
+## Links
+* [Android at Scale — Droidcon](https://www.droidcon.com/2019/11/15/android-at-scale-square/)
+* [A complete journey of Android modularization](https://www.droidcon.com/2022/08/01/a-complete-journey-of-android-modularisation/)
+* [Forging the path from monolith to multimodule app](https://www.droidcon.com/2022/08/01/forging-the-path-from-monolith-to-multi-module-app/)
+* [Improve Android productivity](https://www.droidcon.com/2022/08/03/5-ways-to-improve-your-android-build-productivity/)
+* [Speeding up your Android Gradle builds (Google I/O ’17)](https://www.youtube.com/watch?v=7ll-rkLCtyk&t=1821s&ab_channel=AndroidDevelopers)
+* [Getting started with feature modularization in Android Apps](https://buffer.com/resources/getting-started-with-feature-modularization-in-android-apps/)
+* [The Pitfalls of Preliminary Over-Modularization in Android Projects](https://www.techyourchance.com/preliminary-over-modularization-of-android-projects/)
