@@ -14,6 +14,10 @@ sass:
   sass_dir: _sass
 include: ['_pages']
 markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
 theme: minima
 plugins:
   - jekyll-feed
