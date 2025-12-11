@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Researching about tool calling in on-device AI-edge models"
+title:  "Researching Tool Calling in On-Device AI"
 date:   2025-12-10 14:23:00 +0100
 categories: blog
 ---
@@ -48,7 +48,7 @@ The question I wanted to answer: have any sub-1B models learned this well enough
 
 Few models are suitable for on-device edge AI. Ideally: under 1GB memory, trained for function calling. Checking the [Berkeley Function-Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html) (BFCL), here’s how the small models compare — with a cloud model included to show the ceiling:
 
-![BFCL Wagon Wheel]({{ "/assets/img/wagon_wheel_bfcl.png" | absolute_url }})
+![BFCL Wagon Wheel]({{ "/assets/img/bfcl-wagon-wheel.png" | absolute_url }})
 *BFCL Wagon Wheel*
 
 {% gist 019ab0867b931ddb6c7dc3ee59a222a6 %} 
@@ -147,49 +147,58 @@ The honest assessment: **edge AI tool calling isn’t production-ready yet** —
 
 The deeper question haunts the whole effort: even if you solve the runtime issues, will 0.6B parameter models reliably handle tool calling JSON plus reasoning? I’ve seen the cognitive ceilings. Multiple structured outputs in sequence push these models past their limits.
 
+So tool calling is off the table for now. But the work wasn't wasted.
+
 ## Upgrading the existing app
 
-Despite the runtime issues, the architectural exploration wasn’t wasted. Beyond the tool calling work, I restructured the app toward production-ready architecture.
-
-### Local inference + Koog Agentic framework
-
-Koog + Local Inference integration
-
-![Local inference architecture]({{ "/assets/img/architecture-local-inference.png" | absolute_url }})
-
-The architecture is simple:
-
-1. **Koog Side**: AIAgent calls `execute()` with a prompt (list of messages)
-2. **Bridge**: `LocalInferenceLLMClient` adapts between:
-    - Input: prompt → extracts `String`
-    - Lambda: Invokes `promptExecutor(String) -> inferenceEngine.prompt()`
-    - Output: `String` → wraps in Koog’s `SMessage.Assistant`
-3. **Android Side**: The inference engine classes executes on LiteRT-LM or MediaPipe native library
-
-### From a Yazio small experiment to Model testing platform
-
-What happen if I challenge Google and create another state of the art platform, similar to the [AI Edge Gallery](https://github.com/google-ai-edge/gallery) app? :)
+What started as a small notification prototype has become something more useful: a testing platform for edge AI on Android. Think of it as an alternative to [Google's AI Edge Gallery](https://ai.google.dev/edge/gallery) app, focused specifically on text generation and agentic workflows.
 
 ![App screenshots](<{{ "/assets/img/screenshots.jpg" | absolute_url }}>)
 *App screenshots*
 
-That idea led to adding a new screen for model browsing with Hugging Face model download support. It will help me test different local inference runtimes, compare agent tool calling with alternative approaches, evaluate more models, and more.
+**What this platform offers that AI Edge Gallery doesn't:**
+
+- Agentic framework integration (Koog)
+- Tool calling support via both MediaPipe and LiteRT-LM
+- No HuggingFace sign-up required for model downloads
+- Planned: llama.cpp runtime and LoRA support
+
+**What AI Edge Gallery does that this doesn't (yet):**
+
+- Audio and image generation
+- Non-generative model types
+
+**The architecture underneath:**
+
+![Local inference architecture]({{ "/assets/img/architecture-local-inference.png" | absolute_url }})
+
+1. Koog Side: AIAgent calls `execute()` with a prompt (list of messages)
+2. Bridge: `LocalInferenceLLMClient` adapts between:
+    - Input: prompt → extracts `String`
+    - Lambda: Invokes `promptExecutor(String) -> inferenceEngine.prompt()`
+    - Output: `String` → wraps in Koog’s `SMessage.Assistant`
+3. Android Side: The inference engine classes executes on LiteRT-LM or MediaPipe native library
+
+When tool calling eventually works, the foundation is ready.
+I'm planning to publish this on the Play Store to make it accessible for other developers exploring edge AI. If you're testing small models on Android, this might save you some setup time.
 
 ## Research Directions
 
 Here are the paths worth exploring:
 
-- **Alternative runtime like Llama.cpp**: Mature, [well-tested](https://farmaker47.medium.com/run-gemma-and-vlms-on-mobile-with-llama-cpp-dbb6e1b19a93), though with C++ integration overhead. Investing in a custom conversation API (tokenization, conversation history, etc) could yield results
-- **RAG Without Function Calling**: EmbeddingGemma + tiny generative model. Informational queries only (no actions). Actions handled by UI and deterministic code
-- **Fine tuning with function calling**: [Train](https://huggingface.co/agents-course/notebooks/blob/main/bonus-unit1/bonus-unit1.ipynb) a capable and GPU backed model like Gemma3–1B with function calling specifically for the Yazio use case.
-- **Wait for LiteRT-LM improvements**: Google is actively developing LiteRT-LM, and support for new models will likely improve. The timeline is unknown, but this is the lowest-effort long-term path.
+- **Alternative runtime like Llama.cpp**: Mature, [well-tested](https://farmaker47.medium.com/run-gemma-and-vlms-on-mobile-with-llama-cpp-dbb6e1b19a93), , though with C++ integration overhead. A custom conversation API might unlock what LiteRT-LM can't yet deliver.
+- **RAG Without Function Calling**: Use EmbeddingGemma plus a tiny generative model for informational queries. Keep actions in deterministic code where they're reliable.
+- **Fine tuning with function calling**: [Train](https://huggingface.co/agents-course/notebooks/blob/main/bonus-unit1/bonus-unit1.ipynb) specifically for the Yazio use case. High effort, uncertain payoff.
+- **Wait for LiteRT-LM improvements**: Google is actively developing LiteRT-LM, and support for new models will likely improve. The lowest-effort path if timeline isn't urgent.
 
 
 ## Conclusions
 
-I’ve arrived at this point with mixed feelings. It has been a long journey, and all the time invested led me to a conclusion I almost knew from the very beginning: _it’s not yet possible to do tool calling — and thus achieve agentic behavior — on mobile devices._  
+It has been a long journey, and all the time invested led me to a conclusion I almost knew from the very beginning: _it’s not yet possible to do tool calling — and thus achieve agentic behavior — on mobile devices._  
 
-However, I learned many new AI concepts and pivoted from a small notification example to a solid, well-coded platform for fast edge-AI model testing and research. We’ll see how the story continues. :)
+However, I built something useful: a testing platform for edge AI models that I'll keep developing. And I learned where the boundaries actually are — not from documentation, but from hitting them.
+
+The foundation is ready. Now we wait — or find another path.
 
 
 ### Links
