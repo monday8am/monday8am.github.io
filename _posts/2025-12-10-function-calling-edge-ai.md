@@ -12,9 +12,9 @@ Honestly: **for a production notification app, you don’t need tool calling**. 
 
 ## What’s in this post
 
-- Colab notebook to create a MediaPipe / LiteRT-LM compatible model
-- Local inference code using both MediaPipe / LiteRT-LM libs
-- Sample app as platform for future function call testing
+- [Colab notebook to create a MediaPipe / LiteRT-LM compatible model](#the-model-conversion-code)
+- [Local inference code using both MediaPipe / LiteRT-LM libs](#the-local-inference-code)
+- [Sample app as platform for future function call testing](#upgrading-the-existing-app)
 
 ## How Tool Calling Works (and Why Size Matters)
 
