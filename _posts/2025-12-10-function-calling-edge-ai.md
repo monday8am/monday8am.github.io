@@ -5,7 +5,7 @@ date:   2025-12-10 14:23:00 +0100
 categories: blog
 ---
 
-In my [previous post](https://claude.ai/blog/2025/10/01/flat-notifications-edge-ai.html), I introduced a prototype using AI to generate context-aware notifications. The architecture worked, but the model only generated text — it wasn’t calling tools. Tool calling is what separates an isolated model from an agentic experience.  
+In my [previous post](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html), I introduced a prototype using AI to generate context-aware notifications. The architecture worked, but the model only generated text — it wasn’t calling tools. Tool calling is what separates an isolated model from an agentic experience.  
 This post documents my attempt to find out if that’s possible with a sub-1B model on a phone.
 
 Honestly: **for a production notification app, you don’t need tool calling**. Hardcoded orchestration is simpler and more reliable. But understanding how tool calling works at the edge — with resource constraints and limited model capacity — teaches you something fundamental about where on-device AI is heading.
@@ -20,7 +20,7 @@ Honestly: **for a production notification app, you don’t need tool calling**. 
 
 Before the practical part, here’s a quick primer on how models handle tool calls.
 
-_Already familiar with tool calling internals?_ [Jump to Model Selection](https://medium.com/p/1c6143854ff3/edit#model-selection)
+_Already familiar with tool calling internals?_ [Jump to Model Selection](#the-model-selection)
 
 When you provide tools to a model, you’re giving it a structured vocabulary for actions ([for the moment](https://www.anthropic.com/engineering/code-execution-with-mcp)). The model must learn not just the vocabulary, but a protocol: how functions are formatted, when to invoke them, how to parse results, and how to continue the conversation afterward.
 
@@ -204,9 +204,9 @@ The foundation is ready. Now we wait — or find another path.
 ### Links
 
 - [Prototype app repository](https://github.com/monday8am/koogagent)
-- [Model conversion notebook (Gist)](https://gist.github.com/monday8am/d9a89c08a81f2746aba3981ee0c98015)
-- [From Flat Notifications to Edge AI](https://claude.ai/blog/2025/10/01/flat-notifications-edge-ai.html)
+- [Model conversion notebook](https://gist.github.com/monday8am/a1182a0d2ce0320959f053841ec35ddd)
+- [From Flat Notifications to Edge AI](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html)
 - [Qwen3 model family](https://huggingface.co/qwen)
 - [Google AI Edge Torch](https://github.com/google/ai-edge-torch)
-- [LiteRT-LM documentation](https://github.com/google/ai-edge-torch)
+- [LiteRT-LM documentation](https://github.com/google/litertlm)
 - [Mediapipe documentation](https://ai.google.dev/edge/mediapipe/solutions/genai/function_calling/android)
