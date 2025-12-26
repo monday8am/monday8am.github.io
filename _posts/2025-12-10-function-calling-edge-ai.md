@@ -5,6 +5,8 @@ date:   2025-12-10 14:23:00 +0100
 categories: blog
 ---
 
+> **Update (December 20th, 2025)**: One week after publishing this article, Google released FunctionGemma — a Gemma 3 270M model specifically fine-tuned for function calling, with published fine-tuning recipes and LiteRT-LM deployment support.<br /> This directly addresses the gap I identified: small models that can do function calling and work in Google's edge runtime. The conversion code, testing methodology, and architectural insights in this post remain valid — but the conclusion has shifted from "not yet possible" to "now there's a path forward."
+
 In my [previous post](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html), I introduced a prototype using AI to generate context-aware notifications. The architecture worked, but the model only generated text — it wasn’t calling tools. Tool calling is what separates an isolated model from an agentic experience.  
 This post documents my attempt to find out if that’s possible with a sub-1B model on a phone.
 

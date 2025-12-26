@@ -39,7 +39,14 @@ Block Body Texts
 p,
 blockquote,
 pre {
-	margin: 0 0 1em;
+	margin: 0 0 1.5em;
+}
+
+blockquote {
+  border-left: 4px solid $link-color;
+  padding: 0 0 0 1.5em;
+  font-style: italic;
+  color: lighten($font-color, 20%);
 }
 
 h1 + p {
