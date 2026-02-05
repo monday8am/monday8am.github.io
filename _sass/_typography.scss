@@ -10,11 +10,13 @@ h3 {
 	font-family: $heading-font;
 	margin: 1.4em 0 .7em;
 	line-height: 1;
+
 	a,
 	a:visited {
 		text-decoration: none;
 		color: $font-color;
 	}
+
 	a:hover {
 		text-decoration: underline;
 	}
@@ -43,22 +45,28 @@ pre {
 }
 
 blockquote {
-  border-left: 4px solid $link-color;
-  padding: 0 0 0 1.5em;
-  font-style: italic;
-  color: lighten($font-color, 20%);
+	border-left: 4px solid $link-color;
+	padding: 0 0 0 1.5em;
+	font-style: italic;
+	color: lighten($font-color, 20%);
 }
 
-h1 + p {
+h1+p {
 	font-size: 1.2em;
 	margin: 0 0 2em;
 }
 
 pre {
-  padding: 10pt;
-  background-color: #ddd;
-  border-radius: 8pt;
-  font-family: $code-font;
+	padding: 8pt;
+	background-color: #f6f8fa;
+	border-radius: 8pt;
+	font-family: $code-font;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-x: auto;
+	font-size: 0.8em;
+	line-height: 1.45;
+	margin: 0 0 1em;
 }
 
 /*---------------------------------------
@@ -67,8 +75,7 @@ Lists
 
 ul,
 ol,
-li
-dl,
+li dl,
 dt,
 dd {
 	line-height: 1.4em;
@@ -83,7 +90,8 @@ code,
 kbd,
 samp,
 var {
-  font-family: $code-font;
+	font-family: $code-font;
+	font-size: 0.8em;
 }
 
 /*---------------------------------------
@@ -93,11 +101,13 @@ Links
 a {
 	color: $link-color;
 	text-decoration: underline;
+
 	&:visited {
 		color: $link-visited-color;
 	}
+
 	&:hover {
-	color: $link-hover-color;
+		color: $link-hover-color;
 	}
 }
 
@@ -109,9 +119,11 @@ label,
 input,
 textarea,
 button {
-  font-size: 1em;
-  margin: 0;
-  line-height: 1.4em;
+	font-size: 1em;
+	margin: 0;
+	line-height: 1.4em;
 }
 
-label {	font-weight: 600; }
+label {
+	font-weight: 600;
+}

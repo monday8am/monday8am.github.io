@@ -1,17 +1,31 @@
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="initial-scale=1.0">
-  <meta name="Author" content="Angel Anton">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="initial-scale=1.0">
+	<meta name="Author" content="Angel Anton">
 
 	<title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
 
-	<link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
+	<link rel="stylesheet" href="{{ " /css/main.css" | prepend: site.baseurl }}">
 	<link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata|Work+Sans:700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata|JetBrains+Mono|Work+Sans:700" rel="stylesheet">
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?">
 
 	<!-- Google Analytics-->
 	{% if jekyll.environment == 'production' %}
-    {% include analytics.html %}
-    {% endif %}
+	{% include analytics.html %}
+	{% endif %}
+
+	{% if page.mermaid %}
+	<script type="module">
+		import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs';
+		mermaid.initialize({
+			startOnLoad: false,
+			theme: 'base',
+			fontFamily: 'JetBrains Mono'
+		});
+		await mermaid.run({
+			querySelector: '.language-mermaid',
+		});
+	</script>
+	{% endif %}
 </head>
