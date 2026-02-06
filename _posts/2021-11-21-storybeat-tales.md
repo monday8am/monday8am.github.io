@@ -60,9 +60,11 @@ We built a family of renderers around this interface — each one responsible fo
 
 ```mermaid
 flowchart TB
-    classDef blue fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px,color:black
-    classDef green fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
-    classDef purple fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:black
+    classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
+    classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
+    classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
+    classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
+    linkStyle default stroke:black,stroke-width:2px,color:black
 
     subgraph Input["Input Sources"]
         Video["Video Files"]
@@ -89,14 +91,15 @@ flowchart TB
         Snapshot["SnapshotCanvas<br/>(Thumbnails)"]
     end
 
-    Input:::blue --> Renderers
-    Renderers:::green --> Canvas
-    Canvas:::purple --> Targets
-    Targets:::blue
+    Input:::green --> Renderers
+    Renderers:::blue --> Canvas
+    Canvas:::yellow --> Targets
+    Targets:::red
     
-    class Input,Targets blue
-    class Renderers green
-    class Canvas purple
+    class Input green
+    class Renderers blue
+    class Canvas yellow
+    class Targets red
 ```
 
 The key property: no renderer knows or cares where it's drawing. Screen? Video file? Thumbnail? Same code, same result.
@@ -139,9 +142,11 @@ I spent a few days stuck on this until I found that OpenGL has a feature called 
 
 ```mermaid
 flowchart TB
-    classDef blue fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px,color:black
-    classDef green fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
-    classDef purple fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:black
+    classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
+    classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
+    classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
+    classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
+    linkStyle default stroke:black,stroke-width:2px,color:black
 
     subgraph EGL["EGL Layer"]
         EGLDisplay["EGLDisplay"]
@@ -179,9 +184,9 @@ flowchart TB
     EditSurface --> TextView
     RecordSurface --> Encoder
 
-    style SharedResources fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:black
-    style EditContext fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
-    style RecordContext fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
+    style SharedResources fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
+    style EditContext fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
+    style RecordContext fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
 ```
 
 When a video decoder produces a frame, it writes to a texture. That texture is visible to *both* contexts. During editing, we read it and composite it onto the screen. During recording, we read the *same texture* and composite it into the export.
@@ -222,13 +227,16 @@ sequenceDiagram
     participant Record as OffScreenCanvas
     participant Encoder as MediaCodec
 
+    rect rgba(192, 248, 208, 0.4)
     Note over Edit,Encoder: Initialization Phase
 
     Edit->>EGL: eglCreateContext(display, config, EGL_NO_CONTEXT)
     EGL-->>Edit: editContext
     Edit->>EGL: eglCreateWindowSurface(display, config, textureView)
     EGL-->>Edit: editSurface
+    end
 
+    rect rgba(199, 220, 252, 0.4)
     Note over Edit,Encoder: Recording Phase
 
     Edit->>Record: Create OffScreenCanvas(sharedEglContext)
@@ -241,13 +249,16 @@ sequenceDiagram
     EGL-->>Record: recordSurface
 
     Record->>Encoder: Create encoder input surface
+    end
 
+    rect rgba(247, 248, 192, 0.4)
     Note over Edit,Encoder: Shared Resource Access
 
     Edit->>EGL: Upload video texture
     Note over EGL: Texture visible in BOTH contexts
     Record->>EGL: Read same video texture (no copy)
     Record->>Encoder: Render to encoder surface
+    end
 ```
 
 There's a subtle detail in that sequence worth highlighting. The recording context doesn't render to a window — there's nothing to display on screen. Instead, it uses an EGL PBuffer surface: an off-screen, in-memory rendering target. This is how we render frames that go directly to the video encoder without ever touching the display:
@@ -357,9 +368,11 @@ Looking at the complete picture, every frame follows the same path — from deco
 
 ```mermaid
 flowchart TB
-    classDef blue fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px,color:black
-    classDef green fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
-    classDef purple fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:black
+    classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
+    classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
+    classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
+    classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
+    linkStyle default stroke:black,stroke-width:2px,color:black
 
     subgraph Decode["Video Decoding"]
         MediaExtractor["MediaExtractor"]
@@ -405,9 +418,9 @@ flowchart TB
     AudioEncoder --> Muxer
     Muxer --> MP4
 
-    style SharedGL fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:black
-    style EditPath fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
-    style RecordPath fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
+    style SharedGL fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
+    style EditPath fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
+    style RecordPath fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
 ```
 
 The same renderers that drew to the screen now draw to the recording buffer. The same textures that displayed the preview now feed the export. The same shaders that applied filters live now apply them in the video file.
@@ -448,8 +461,8 @@ flowchart LR
 
     Without ---|"~50% Memory<br/>Reduction"| With
 
-    style Without fill:#ffcdd2
-    style With fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:black
+    style Without fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
+    style With fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
 ```
 
 The app eventually reached over **10 million downloads** with a **4.5-star rating** from more than 300,000 reviews. Users created millions of stories without ever knowing about the OpenGL pipeline underneath — which is probably the best compliment a rendering engine can get.
