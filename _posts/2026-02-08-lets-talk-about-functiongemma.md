@@ -110,16 +110,16 @@ flowchart TD
     Q6 -->|Yes| Q9{Is the task<br/>fully local?}
 
     Q7{Does on-device routing<br/>add real value before<br/>the remote call?}
-    Q7 -->|No| D7[☁️ Use a cloud LLM directly<br/>If you need the network anyway<br/>and routing is simple, skip<br/>the on-device overhead]
     Q7 -->|Yes| Q6
+    Q7 -->|No| D7[☁️ Use a cloud LLM directly<br/>If you need the network anyway<br/>and routing is simple, skip<br/>the on-device overhead]
 
     Q9 -->|Yes| D6[📱 FunctionGemma<br/>fine-tuned for your tools<br/>The sweet spot: bounded API,<br/>local-first, failure-tolerant]
     Q9 -->|No| D8[📱☁️ FunctionGemma as router<br/>+ cloud backend<br/>Local intent classification,<br/>remote execution via<br/>agent orchestration]
 
-    classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
-    classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
-    classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
-    classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
+    classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black,font-size:20px
+    classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black,font-size:20px
+    classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black,font-size:20px
+    classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black,font-size:20px
     linkStyle default stroke:black,stroke-width:2px,color:black
 
     class START red
