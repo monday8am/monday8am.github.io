@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "let's talk about FunctionGemma"
+title: "[Draft] Let's talk about FunctionGemma"
 date: 2026-02-08
 categories: blog
+mermaid: true
 ---
 
 In my [first post](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html), I built a prototype for context-aware notifications using an on-device language model. In the [second](https://monday8am.com/blog/2025/12/10/function-calling-edge-ai.html), I tried to make that model call tools — and hit a wall. Then, one week after publishing, Google released [FunctionGemma](https://ai.google.dev/gemma/docs/functiongemma): a Gemma 3 270M model specifically fine-tuned for function calling.
@@ -80,6 +81,7 @@ This isn't a failure of FunctionGemma specifically. It's a **structural challeng
 
 After enough failed attempts, I built a decision tree to formalize the evaluation. It's inspired by Google's [Compose Animation decision tree](https://developer.android.com/develop/ui/compose/animation/introduction) — a practical tool that helps developers pick the right approach instead of guessing.
 
+```mermaid
 flowchart TD
     START([🤔 I have a mobile feature idea<br/>that could use AI]) --> Q1
 
@@ -114,22 +116,19 @@ flowchart TD
     Q9 -->|Yes| D6[📱 FunctionGemma<br/>fine-tuned for your tools<br/>The sweet spot: bounded API,<br/>local-first, failure-tolerant]
     Q9 -->|No| D8[📱☁️ FunctionGemma as router<br/>+ cloud backend<br/>Local intent classification,<br/>remote execution via<br/>agent orchestration]
 
-    %% Styling
-    classDef startStyle fill:#1a1a2e,stroke:#e94560,color:#fff,stroke-width:2px
-    classDef questionStyle fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
-    classDef deterministicStyle fill:#1b4332,stroke:#2d6a4f,color:#fff
-    classDef cloudStyle fill:#1d3557,stroke:#457b9d,color:#fff
-    classDef edgeStyle fill:#462255,stroke:#7b2d8e,color:#fff
-    classDef waitStyle fill:#5c4033,stroke:#8b6914,color:#fff
-    classDef descStyle fill:#132a22,stroke:#2d6a4f,color:#ccc,stroke-dasharray: 5 5
+    classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
+    classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
+    classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
+    classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
+    linkStyle default stroke:black,stroke-width:2px,color:black
 
-    class START startStyle
-    class Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q9 questionStyle
-    class D_COMMON deterministicStyle
-    class D1_DESC,D2_DESC,D4_DESC descStyle
-    class D3,D7 cloudStyle
-    class D6,D8 edgeStyle
-    class D5 waitStyle
+    class START red
+    class Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q9 blue
+    class D_COMMON,D1_DESC,D2_DESC,D4_DESC green
+    class D3,D7 yellow
+    class D6,D8 green
+    class D5 red
+```    
 
 The tree has six decision points, each based on a real lesson:
 
