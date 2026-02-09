@@ -6,15 +6,8 @@ categories: blog
 mermaid: true
 ---
 
-In my [first post](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html), I built a prototype for context-aware notifications using an on-device language model. In the [second](https://monday8am.com/blog/2025/12/10/function-calling-edge-ai.html), I tried to make that model call tools — and hit a wall. Then, one week after publishing, Google released [FunctionGemma](https://ai.google.dev/gemma/docs/functiongemma): a Gemma 3 270M model specifically fine-tuned for function calling.
+Recently I wrote a [post](https://monday8am.com/blog/2025/12/10/function-calling-edge-ai.html), I tried to make that model call tools — and hit a wall. Then, one week after publishing, Google released [FunctionGemma](https://ai.google.dev/gemma/docs/functiongemma): a Gemma 3 270M model specifically fine-tuned for function calling.
 
-Finally, a small model designed to do exactly what I needed. So I did what any excited developer would do: I started looking for the perfect use case.
-
-I spent weeks evaluating scenarios. Context-aware notifications. Hiking safety copilots. Cycling route re-planners. Voice-controlled outdoor companions. Each time, I'd get excited about the architecture, sketch out the tool definitions, and then arrive at the same uncomfortable conclusion:
-
-**Deterministic code would do this better.**
-
-This post is about that realization — and the decision tree I built to stop myself from repeating the same mistake.
 
 ## FunctionGemma in 30 Seconds
 
@@ -85,31 +78,31 @@ After enough failed attempts, I built a decision tree to formalize the evaluatio
 flowchart TD
     START([🤔 I have a mobile feature idea<br/>that could use AI]) --> Q1
 
-    Q1{Does the feature require<br/>natural language<br/>understanding?}
+    Q1[Does the feature require<br/>natural language<br/>understanding?]
     Q1 -->|No| D1_DESC[Rule engines, algorithms,<br/>and structured logic are<br/>more reliable and efficient] --> D_COMMON[✅ Use deterministic code]
     Q1 -->|Yes| Q2
 
-    Q2{Is the input from<br/>the user in<br/>natural language?}
+    Q2[Is the input from<br/>the user in<br/>natural language?]
     Q2 -->|No| D2_DESC[Structured inputs like sensors,<br/>GPS, buttons, or toggles<br/>don't need language models] --> D_COMMON
     Q2 -->|Yes| Q3
 
-    Q3{Can the task be solved<br/>with a finite set of<br/>predefined actions?}
+    Q3[Can the task be solved<br/>with a finite set of<br/>predefined actions?]
     Q3 -->|No| D3[☁️ Use a cloud LLM<br/>Open-ended generation,<br/>complex reasoning, and<br/>creative tasks exceed<br/>on-device model capacity]
     Q3 -->|Yes| Q4
 
-    Q4{Is failure tolerable?<br/>Can you retry or<br/>fall back gracefully?}
+    Q4[Is failure tolerable?<br/>Can you retry or<br/>fall back gracefully?]
     Q4 -->|No| D4_DESC[Safety-critical, financial,<br/>or medical decisions need<br/>100% reliability, not 85%] --> D_COMMON
     Q4 -->|Yes| Q5
 
-    Q5{Can all processing<br/>happen on-device?}
+    Q5[Can all processing<br/>happen on-device?]
     Q5 -->|Yes| Q6
     Q5 -->|No| Q7
 
-    Q6{Are you ready<br/>to fine-tune?}
+    Q6[Are you ready<br/>to fine-tune?]
     Q6 -->|No| D5[⏸️ Wait or reconsider<br/>Base FunctionGemma scores<br/>58% without fine-tuning.<br/>Not reliable enough for<br/>production use]
-    Q6 -->|Yes| Q9{Is the task<br/>fully local?}
+    Q6 -->|Yes| Q9[Is the task<br/>fully local?]
 
-    Q7{Does on-device routing<br/>add real value before<br/>the remote call?}
+    Q7[Does on-device routing<br/>add real value before<br/>the remote call?]
     Q7 -->|Yes| Q6
     Q7 -->|No| D7[☁️ Use a cloud LLM directly<br/>If you need the network anyway<br/>and routing is simple, skip<br/>the on-device overhead]
 
