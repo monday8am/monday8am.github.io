@@ -468,17 +468,13 @@ flowchart LR
 The app eventually reached over **10 million downloads** with a **4.5-star rating** from more than 300,000 reviews. Users created millions of stories without ever knowing about the OpenGL pipeline underneath — which is probably the best compliment a rendering engine can get.
 
 
-## Reflections
-
-Looking back, a few things stand out.
+## Conclusions
 
 **The `ICanvasGL` abstraction paid for itself many times over.** We created it early because we were tired of preview-vs-export inconsistencies, not because we foresaw how useful it would become. When new rendering targets came up months later, they just worked. Sometimes the best architectural decisions come from solving an immediate pain rather than planning ahead.
 
 **The weeks spent learning EGL contexts felt slow at the time.** I remember wondering if we were over-investing in low-level details. But that knowledge became the foundation for everything else — every new feature built on top of it without requiring architectural changes.
 
 **Keeping data on the GPU matters more than it seems.** Every time you move data between GPU and CPU, you pay in latency and memory. We learned this the hard way with the original FFmpeg pipeline. The entire OpenGL rewrite was essentially one idea: stop moving video frames back and forth.
-
-**There's a lot I'd do differently today.** Some of the thread synchronization code is more complex than it needs to be. The error handling around EGL context creation could be more robust. And if I were starting fresh, I'd probably explore Vulkan. But the core abstractions — surface-agnostic rendering and shared contexts — would stay the same.
 
 ## Acknowledgments
 
