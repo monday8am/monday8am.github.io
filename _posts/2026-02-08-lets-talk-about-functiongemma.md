@@ -6,15 +6,8 @@ categories: blog
 mermaid: true
 ---
 
-In my [first post](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html), I built a prototype for context-aware notifications using an on-device language model. In the [second](https://monday8am.com/blog/2025/12/10/function-calling-edge-ai.html), I tried to make that model call tools — and hit a wall. Then, one week after publishing, Google released [FunctionGemma](https://ai.google.dev/gemma/docs/functiongemma): a Gemma 3 270M model specifically fine-tuned for function calling.
+Recently I wrote a [post](https://monday8am.com/blog/2025/12/10/function-calling-edge-ai.html), I tried to make that model call tools — and hit a wall. Then, one week after publishing, Google released [FunctionGemma](https://ai.google.dev/gemma/docs/functiongemma): a Gemma 3 270M model specifically fine-tuned for function calling.
 
-Finally, a small model designed to do exactly what I needed. So I did what any excited developer would do: I started looking for the perfect use case.
-
-I spent weeks evaluating scenarios. Context-aware notifications. Hiking safety copilots. Cycling route re-planners. Voice-controlled outdoor companions. Each time, I'd get excited about the architecture, sketch out the tool definitions, and then arrive at the same uncomfortable conclusion:
-
-**Deterministic code would do this better.**
-
-This post is about that realization — and the decision tree I built to stop myself from repeating the same mistake.
 
 ## FunctionGemma in 30 Seconds
 
