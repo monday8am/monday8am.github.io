@@ -69,6 +69,14 @@ pre {
 	margin: 0 0 1em;
 }
 
+pre:has(.language-mermaid) {
+	background: transparent;
+	padding: 0;
+	border-radius: 0;
+	white-space: normal;
+	overflow-x: auto;
+}
+
 /*---------------------------------------
 Lists
 ---------------------------------------*/

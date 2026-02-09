@@ -32,10 +32,15 @@ flowchart TB
     classDef red fill:#ffc0cb66,stroke:#ffc0cb,stroke-width:2px,color:black
     linkStyle default stroke:black,stroke-width:2px,color:black
 
-    subgraph View["View Layer"]
-        Fragment["GalleryFragment"]
-        ResAdapter["ResourcesAdapter<br/>(PagingDataAdapter)"]
-        AlbAdapter["AlbumsAdapter<br/>(ListAdapter)"]
+    subgraph Data["Data Layer"]
+        MediaDS["MediaDataSource<br/>(ContentResolver)"]
+        PagingSrc["PagedLocalResources<br/>(PagingSource)"]
+    end
+
+    subgraph Domain["Domain Layer"]
+        PagedUC["GetPagedAlbumResources"]
+        AlbumsUC["GetAlbumsUseCase"]
+        SpatialUC["GetSpatialAttributes"]
     end
 
     subgraph Presenter["Presenter Layer"]
@@ -45,35 +50,37 @@ flowchart TB
         Combine["combine + flatMapLatest"]
     end
 
-    subgraph Domain["Domain Layer"]
-        PagedUC["GetPagedAlbumResources"]
-        AlbumsUC["GetAlbumsUseCase"]
-        SpatialUC["GetSpatialAttributes"]
+    subgraph View1["View Layer"]
+        Fragment["GalleryFragment"]
     end
 
-    subgraph Data["Data Layer"]
-        PagingSrc["PagedLocalResources<br/>(PagingSource)"]
-        MediaDS["MediaDataSource<br/>(ContentResolver)"]
+    subgraph View2["View Layer"]
+        ResAdapter["ResourcesAdapter<br/>(PagingDataAdapter)"]
+        AlbAdapter["AlbumsAdapter<br/>(ListAdapter)"]
     end
+
+    MediaDS --> PagingSrc
+    MediaDS --> AlbumsUC
+    MediaDS --> SpatialUC
+    PagingSrc --> PagedUC
 
     Fragment -->|user taps| GP
+
+    PagedUC --> GP
+    AlbumsUC --> GP
+    SpatialUC --> GP
+
     GP --> Combine
     AlbumFlow --> Combine
     StateFlow --> Combine
     Combine -->|PagingData| ResAdapter
 
-    GP --> PagedUC
-    GP --> AlbumsUC
-    GP --> SpatialUC
-    PagedUC --> PagingSrc
-    PagingSrc --> MediaDS
-    AlbumsUC --> MediaDS
-    SpatialUC --> MediaDS
 
-    View:::green
-    Presenter:::blue
-    Domain:::yellow
     Data:::red
+    Domain:::yellow
+    Presenter:::blue
+    View1:::green
+    View2:::green
 ```
 
 Nothing unusual here. The interesting part is what happens inside the presenter.
@@ -211,7 +218,7 @@ Three operators do most of the work here.
 The reactive flow looks like this:
 
 ```mermaid
-flowchart LR
+flowchart TB
     classDef blue fill:#c7dcfc66,stroke:#c7dcfc,stroke-width:2px,color:black
     classDef yellow fill:#f7f8c066,stroke:#f7f8c0,stroke-width:2px,color:black
     classDef green fill:#c0f8d066,stroke:#c0f8d0,stroke-width:2px,color:black
