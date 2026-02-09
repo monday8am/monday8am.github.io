@@ -78,31 +78,31 @@ After enough failed attempts, I built a decision tree to formalize the evaluatio
 flowchart TD
     START([🤔 I have a mobile feature idea<br/>that could use AI]) --> Q1
 
-    Q1{Does the feature require<br/>natural language<br/>understanding?}
+    Q1[Does the feature require<br/>natural language<br/>understanding?]
     Q1 -->|No| D1_DESC[Rule engines, algorithms,<br/>and structured logic are<br/>more reliable and efficient] --> D_COMMON[✅ Use deterministic code]
     Q1 -->|Yes| Q2
 
-    Q2{Is the input from<br/>the user in<br/>natural language?}
+    Q2[Is the input from<br/>the user in<br/>natural language?]
     Q2 -->|No| D2_DESC[Structured inputs like sensors,<br/>GPS, buttons, or toggles<br/>don't need language models] --> D_COMMON
     Q2 -->|Yes| Q3
 
-    Q3{Can the task be solved<br/>with a finite set of<br/>predefined actions?}
+    Q3[Can the task be solved<br/>with a finite set of<br/>predefined actions?]
     Q3 -->|No| D3[☁️ Use a cloud LLM<br/>Open-ended generation,<br/>complex reasoning, and<br/>creative tasks exceed<br/>on-device model capacity]
     Q3 -->|Yes| Q4
 
-    Q4{Is failure tolerable?<br/>Can you retry or<br/>fall back gracefully?}
+    Q4[Is failure tolerable?<br/>Can you retry or<br/>fall back gracefully?]
     Q4 -->|No| D4_DESC[Safety-critical, financial,<br/>or medical decisions need<br/>100% reliability, not 85%] --> D_COMMON
     Q4 -->|Yes| Q5
 
-    Q5{Can all processing<br/>happen on-device?}
+    Q5[Can all processing<br/>happen on-device?]
     Q5 -->|Yes| Q6
     Q5 -->|No| Q7
 
-    Q6{Are you ready<br/>to fine-tune?}
+    Q6[Are you ready<br/>to fine-tune?]
     Q6 -->|No| D5[⏸️ Wait or reconsider<br/>Base FunctionGemma scores<br/>58% without fine-tuning.<br/>Not reliable enough for<br/>production use]
-    Q6 -->|Yes| Q9{Is the task<br/>fully local?}
+    Q6 -->|Yes| Q9[Is the task<br/>fully local?]
 
-    Q7{Does on-device routing<br/>add real value before<br/>the remote call?}
+    Q7[Does on-device routing<br/>add real value before<br/>the remote call?]
     Q7 -->|Yes| Q6
     Q7 -->|No| D7[☁️ Use a cloud LLM directly<br/>If you need the network anyway<br/>and routing is simple, skip<br/>the on-device overhead]
 

@@ -321,13 +321,11 @@ class ResourcesAdapter(context: Context) {
 Both patterns are standard Glide usage, nothing revolutionary. But in a gallery with hundreds of media items, the difference between jittery and smooth scrolling often comes down to these details.
 
 
-## Looking Back
+## Conclusions
 
 This setup served us well for the three years I worked on Storybeat. The `BitmapProvider` abstraction turned out to be one of those decisions that kept paying off — when we added unit tests for the rendering pipeline, we could swap in a fake provider that returned solid-color bitmaps without touching Glide at all.
 
 The disk cache strategy choices were mostly intuitive once we understood the trade-offs. `RESOURCE` for anything transformed, `DATA` for metadata, `AUTOMATIC` when you're unsure. The decision tree isn't complex, but being deliberate about it avoided the kind of mysterious "why is this image stale?" bugs that come from leaving caching to defaults.
-
-If I were building this today, I'd probably look at [Coil](https://coil-kt.github.io/coil/) instead of Glide — it's Kotlin-first, coroutine-native, and the API is cleaner. But the underlying architecture wouldn't change much. The problems are the same: manage memory on constrained devices, avoid redundant work, and give the rendering pipeline synchronous access to bitmaps without blocking the UI.
 
 #### Links
 
