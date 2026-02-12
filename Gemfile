@@ -25,6 +25,7 @@ group :jekyll_plugins do
 end
 
 gem "webrick"
+gem "faraday", ">= 2.14.1"
 gem "faraday-retry"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
