@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Device SLM Decision Tree</title>
+    <style>
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #f0f6fc;
+            font-size: 1.4em;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #8b949e;
+            font-size: 0.9em;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .mermaid {
+            width: 100%;
+            max-width: 1200px;
+        }
+        .legend {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 24px;
+            padding: 16px;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            background: #161b22;
+            max-width: 800px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+        .examples {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 24px;
+            padding: 20px;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            background: #161b22;
+            font-size: 0.85em;
+            line-height: 1.7;
+        }
+        .examples h3 {
+            color: #f0f6fc;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1em;
+        }
+        .example-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: baseline;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #21262d;
+        }
+        .example-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .example-label {
+            font-weight: 600;
+            white-space: nowrap;
+            min-width: 200px;
+            flex-shrink: 0;
+        }
+        .example-detail {
+            color: #8b949e;
+        }
+        .example-path {
+            font-family: monospace;
+            font-size: 0.85em;
+            color: #6e7681;
+            display: block;
+            margin-top: 2px;
+        }
+        .green { color: #3fb950; }
+        .blue { color: #58a6ff; }
+        .purple { color: #bc8cff; }
+        .yellow { color: #d29922; }
+        .red { color: #f85149; }
+    </style>
+</head>
+<body>
+    <h1>Should I use an on-device SLM for this mobile feature?</h1>
+    <p class="subtitle">A decision tree for FunctionGemma and edge AI use cases — based on real experiments</p>
+
+    <div class="mermaid">
+flowchart TD
+    START([🤔 I have a mobile feature idea<br/>that could use AI]) --> Q1
+
+    Q1[Is the user input<br/>natural language?]
+    Q1 -->|No| D1_DESC[Structured inputs — sensors,<br/>GPS, buttons, or toggles — and<br/>rule-based processing don't<br/>need language models] --> D_COMMON[✅ Use deterministic code]
+    Q1 -->|Yes| Q3
+
+    Q3[Can the task be solved<br/>with a finite set of<br/>predefined actions?]
+    Q3 -->|No| D3[☁️ Use a cloud LLM<br/>Open-ended generation,<br/>complex reasoning, and<br/>creative tasks exceed<br/>on-device model capacity]
+    Q3 -->|Yes| Q4
+
+    Q4[Is failure tolerable?<br/>Can you retry or<br/>fall back gracefully?]
+    Q4 -->|No| D4_DESC[Safety-critical, financial,<br/>or medical decisions need<br/>100% reliability, not 85%] --> D_COMMON
+    Q4 -->|Yes| Q5
+
+    Q5[Can all processing<br/>happen on-device?]
+    Q5 -->|Yes| Q6
+    Q5 -->|No| Q7
+
+    Q6[Are you ready<br/>to fine-tune?]
+    Q6 -->|No| D5[⏸️ Wait or reconsider<br/>Base FunctionGemma scores<br/>58% without fine-tuning.<br/>Not reliable enough for<br/>production use]
+    Q6 -->|Yes| Q9[Is the task<br/>fully local?]
+
+    Q7[Does on-device routing<br/>add real value before<br/>the remote call?]
+    Q7 -->|Yes| Q6
+    Q7 -->|No| D7[☁️ Use a cloud LLM directly<br/>If you need the network anyway<br/>and routing is simple, skip<br/>the on-device overhead]
+
+    Q9 -->|Yes| D6[📱 FunctionGemma<br/>fine-tuned for your tools<br/>The sweet spot: bounded API,<br/>local-first, failure-tolerant]
+    Q9 -->|No| D8[📱☁️ FunctionGemma as router<br/>+ cloud backend<br/>Local intent classification,<br/>remote execution via<br/>agent orchestration]
+
+    style START fill:#1a1a2e,stroke:#e94560,color:#fff,stroke-width:2px
+    style Q1 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style Q3 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style Q4 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style Q5 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style Q6 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style Q7 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style Q9 fill:#16213e,stroke:#0f3460,color:#fff,stroke-width:1px
+    style D1_DESC fill:#132a22,stroke:#2d6a4f,color:#ccc,stroke-dasharray: 5 5
+    style D4_DESC fill:#132a22,stroke:#2d6a4f,color:#ccc,stroke-dasharray: 5 5
+    style D_COMMON fill:#1b4332,stroke:#2d6a4f,color:#fff
+    style D3 fill:#1d3557,stroke:#457b9d,color:#fff
+    style D7 fill:#1d3557,stroke:#457b9d,color:#fff
+    style D6 fill:#462255,stroke:#7b2d8e,color:#fff
+    style D8 fill:#462255,stroke:#7b2d8e,color:#fff
+    style D5 fill:#5c4033,stroke:#8b6914,color:#fff
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background:#1b4332; border:1px solid #2d6a4f"></div>
+            <span class="green">Deterministic code</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#1d3557; border:1px solid #457b9d"></div>
+            <span class="yellow">Cloud LLM</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#462255; border:1px solid #7b2d8e"></div>
+            <span class="purple">On-device SLM (FunctionGemma)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#5c4033; border:1px solid #8b6914"></div>
+            <span class="red">Wait / Reconsider</span>
+        </div>
+    </div>
+
+    <div class="examples">
+        <h3>Real examples mapped to each outcome</h3>
+
+        <div class="example-row">
+            <span class="example-label green">Hiking safety copilot</span>
+            <span class="example-detail">
+                Exits at Q1 (No). Sensor data → risk thresholds → alert. Input is GPS, elevation, weather APIs — not language. Deterministic rules are faster and 100% reliable.
+                <span class="example-path">START → Q1 → No → ✅ Deterministic code</span>
+            </span>
+        </div>
+
+        <div class="example-row">
+            <span class="example-label yellow">Context-aware notifications</span>
+            <span class="example-detail">
+                Exits at Q3 (No). Generating creative, personalized meal reminders is open-ended text generation, not bounded function calling. Needs a larger model or cloud LLM.
+                <span class="example-path">START → Q1 → Yes → Q3 → No → ☁️ Cloud LLM</span>
+            </span>
+        </div>
+
+        <div class="example-row">
+            <span class="example-label green">Safety-critical outdoor alerts</span>
+            <span class="example-detail">
+                Exits at Q4 (No). "Should I turn back?" can't tolerate a 15% error rate. When lives are at stake, 85% accuracy isn't enough.
+                <span class="example-path">START → Q1 → Yes → Q3 → Yes → Q4 → No → ✅ Deterministic code</span>
+            </span>
+        </div>
+
+        <div class="example-row">
+            <span class="example-label yellow">Cycling mid-route re-planning</span>
+            <span class="example-detail">
+                Exits at Q7 (No). Language input is genuinely ambiguous ("find a flatter route"), but route computation requires a remote routing engine. If routing is simple enough for a few UI buttons, skip the on-device overhead.
+                <span class="example-path">START → Q1 → Yes → Q3 → Yes → Q4 → Yes → Q5 → No → Q7 → No → ☁️ Cloud LLM directly</span>
+            </span>
+        </div>
+
+        <div class="example-row">
+            <span class="example-label purple">Mobile Actions / Tiny Garden</span>
+            <span class="example-detail">
+                Reaches D6. Google's demo use cases: bounded API surface, fully on-device, fine-tuned for specific tools. "Turn on the flashlight" and "Plant sunflowers in row 2" — the sweet spot.
+                <span class="example-path">START → Q1 → Yes → Q3 → Yes → Q4 → Yes → Q5 → Yes → Q6 → Yes → Q9 → Yes → 📱 FunctionGemma</span>
+            </span>
+        </div>
+
+        <div class="example-row">
+            <span class="example-label purple">Complex voice commands → API routing</span>
+            <span class="example-detail">
+                Reaches D8. FunctionGemma classifies intent locally, Koog orchestrates tool calls, cloud handles execution. Useful when many API endpoints need natural language dispatch.
+                <span class="example-path">START → Q1 → Yes → Q3 → Yes → Q4 → Yes → Q5 → No → Q7 → Yes → Q6 → Yes → Q9 → No → 📱☁️ Router</span>
+            </span>
+        </div>
+
+        <div class="example-row">
+            <span class="example-label red">Any use case without fine-tuning</span>
+            <span class="example-detail">
+                Reaches D5. Base FunctionGemma scores 58% on Mobile Actions. Google's own docs say fine-tuning is required. Without it, the model isn't production-ready.
+                <span class="example-path">START → ... → Q6 → No → ⏸️ Wait or reconsider</span>
+            </span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 30,
+                rankSpacing: 50
+            },
+            themeVariables: {
+                fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif',
+                fontSize: '13px',
+                lineColor: '#30363d',
+                primaryTextColor: '#c9d1d9'
+            }
+        });
+    </script>
+</body>
+</html>

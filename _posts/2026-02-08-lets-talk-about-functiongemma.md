@@ -119,6 +119,8 @@ flowchart TD
     class D6,D8 green
     class D5 red
 ```
+[Decision Tree long version](/assets/docs/decision_tree_v2.html)
+
 
 ## The Uncomfortable Middle
 
