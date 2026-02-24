@@ -243,7 +243,7 @@ The prototype is incomplete and over-engineered for its current capabilities. Bu
 
 ### Links
 
-- [Prototype app repository](https://github.com/monday8am/lottierecorder)
+- [Prototype app repository](https://github.com/monday8am/edgelab)
 - [“Building effective agents” from Anthropic](https://www.anthropic.com/engineering/building-effective-agents)
 - [JetBrains Koog introduction](https://medium.com/@vadim.briliantov)
 - [Google MediaPipe LLM Inference guide](https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference)
