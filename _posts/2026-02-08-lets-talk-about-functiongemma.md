@@ -140,7 +140,7 @@ I'm not saying the model is useless — I'm saying the use cases where on-device
 
 ## What's Next
 
-I'm going to build the router pattern anyway. Not because I've found the perfect use case, but because demonstrating the integration — FunctionGemma dispatching to Koog orchestrating tool calls across local and remote services — has value as a reference implementation. The [testing platform](https://github.com/monday8am/koogagent) I've been developing is the right place for this.
+I'm going to build the router pattern anyway. Not because I've found the perfect use case, but because demonstrating the integration — FunctionGemma dispatching to Koog orchestrating tool calls across local and remote services — has value as a reference implementation. The [testing platform](https://github.com/monday8am/edgelab) I've been developing is the right place for this.
 
 The ecosystem is moving fast. LiteRT-LM is stabilizing, FunctionGemma has fine-tuning recipes, and Google is actively developing the edge AI stack. When the models get more capable and the runtimes more stable, the patterns I've been documenting will be ready.
 
@@ -151,7 +151,7 @@ Or maybe the killer use case will be something none of us have thought of yet. T
 - [FunctionGemma overview](https://ai.google.dev/gemma/docs/functiongemma)
 - [FunctionGemma model card](https://ai.google.dev/gemma/docs/functiongemma/model_card)
 - [Mobile Actions fine-tuning recipe](https://ai.google.dev/gemma/docs/mobile-actions)
-- [KoogAgent repository](https://github.com/monday8am/koogagent)
+- [EdgeAgentLab repository](https://github.com/monday8am/edgelab)
 - [From flat Notifications to Edge AI](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html)
 - [Researching Tool Calling in On-Device AI](https://monday8am.com/blog/2025/12/10/function-calling-edge-ai.html)
 - [Berkeley Function-Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html)

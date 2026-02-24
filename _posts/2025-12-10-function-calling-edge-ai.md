@@ -125,7 +125,7 @@ The Hammer2.1 isn’t officially supported by **LiteRT-LM**, but according to th
 
 ## The Local Inference Code
 
-Let’s start with the **LiteRT-LM** code. The [full version](https://github.com/monday8am/koogagent/blob/main/app/src/main/java/com/monday8am/koogagent/inference/litertlm/LiteRTLmInferenceEngineImpl.kt) is available in the app repository, but a simplified version could be like this:
+Let’s start with the **LiteRT-LM** code. The [full version](https://github.com/monday8am/edgelab/blob/main/app/src/main/java/com/monday8am/koogagent/inference/litertlm/LiteRTLmInferenceEngineImpl.kt) is available in the app repository, but a simplified version could be like this:
 
 {% gist aeb12c48548d6589106e2a78f57edd30 %}
 
@@ -205,7 +205,7 @@ The foundation is ready. Now we wait — or find another path.
 
 ### Links
 
-- [Prototype app repository](https://github.com/monday8am/koogagent)
+- [Prototype app repository](https://github.com/monday8am/edgelab)
 - [Model conversion notebook](https://gist.github.com/monday8am/a1182a0d2ce0320959f053841ec35ddd)
 - [From Flat Notifications to Edge AI](https://monday8am.com/blog/2025/10/01/flat-notifications-edge-ai.html)
 - [Qwen3 model family](https://huggingface.co/qwen)

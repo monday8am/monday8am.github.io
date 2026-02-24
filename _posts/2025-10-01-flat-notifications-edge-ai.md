@@ -13,7 +13,7 @@ _Could these reminders be generated dynamically, on the device, based on my cont
 
 That question led me into an experiment that sits at the intersection of two emerging technologies: **agentic frameworks** (JetBrains Koog) and **on-device small language models** (Google MediaPipe + quantized LLMs). While both exist independently, their integration is still uncharted territory.
 
-The result? A [foundational prototype](https://github.com/monday8am/koogagent) that proves these pieces can work together on Android. This post documents the architecture decisions, integration challenges, what I learned building it and what's are my next steps.
+The result? A [foundational prototype](https://github.com/monday8am/edgelab) that proves these pieces can work together on Android. This post documents the architecture decisions, integration challenges, what I learned building it and what's are my next steps.
 
 ### The problem: Flat notifications
 
@@ -124,7 +124,7 @@ Not yet implemented (but architected):
 The prototype uses the [gemma-3n-E2B-it-litert-lm](https://huggingface.co/google/gemma-3n-E2B-it-litert-lm) model from Google. This size balances capability with mobile constraints—small enough to download over WiFi, large enough for coherent text generation.
 
 **Model Distribution:**  
-Rather than requiring users to authenticate with HuggingFace or configure API keys, the model is bundled in the GitHub repository as a [zip file](https://github.com/monday8am/koogagent/releases/download/0.0.1/gemma3-1b-it-int4.zip). This approach prioritizes developer experience for a learning prototype:
+Rather than requiring users to authenticate with HuggingFace or configure API keys, the model is bundled in the GitHub repository as a [zip file](https://github.com/monday8am/edgelab/releases/download/0.0.1/gemma3-1b-it-int4.zip). This approach prioritizes developer experience for a learning prototype:
 - Clone → Build → Run immediately
 - No external dependencies or account creation
 - Full reproducibility without network calls
@@ -178,7 +178,7 @@ logged anything today."}
 
 It may sound incredible, but building a simple prototype with a significant part of the requirements described above, is quite straightforward. There is solid documentation from Google and JetBrains with multiple examples. None of them includes local inference but it’s a matter of time that those two worlds converge.
 
-The [current implementation](https://github.com/monday8am/koogagent) contains a simple screen for downloading the model from a static link, changing some parameters and prompting the downloaded model. It demonstrates the notification engine can ‘_think locally_’ before speaking. The output is a text and a notification message.
+The [current implementation](https://github.com/monday8am/edgelab) contains a simple screen for downloading the model from a static link, changing some parameters and prompting the downloaded model. It demonstrates the notification engine can ‘_think locally_’ before speaking. The output is a text and a notification message.
 
 ![Prototype screenshots]({{ "/assets/img/koog-prototype.png" | absolute_url }})
 
