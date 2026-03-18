@@ -10,7 +10,9 @@ At Komoot, the Android app had three different navigation systems living side by
 
 None of the three systems were broken individually. The problem was the space between them — the interop code, the duplicated methods, the growing confusion about which approach to use for what. A new developer touching navigation code for the first time had to understand all three patterns and the bridges connecting them.
 
-This is the story of arriving at a surprisingly simple solution: **a typed navigation key as the common language between all three worlds**, and a single Navigator interface that speaks it.
+This is the story of arriving at a surprisingly simple solution: **a typed navigation key as the common language between all three worlds**, and a single `Navigator` interface that speaks it.
+
+![Navigator](/assets/img/navigator.png)
 
 ## The problem with many navigators
 
