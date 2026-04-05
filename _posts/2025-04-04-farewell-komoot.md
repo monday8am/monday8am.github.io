@@ -14,3 +14,10 @@ My main challenge was not to create the most complex algorithm or understand int
 And it is the most important learning I got from a beautiful and exiting period: *fight for transforming what you don't like into a better thing, that's a valid and necessary engineering challenge.*
 
 I'll miss komoot for so many great moments and the amazing people I met — farewell to my first dream job.
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+  <iframe src="https://www.youtube.com/embed/qLJkK4Wn1HI" 
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+          frameborder="0" allowfullscreen>
+  </iframe>
+</div>

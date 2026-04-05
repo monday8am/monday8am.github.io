@@ -2,7 +2,6 @@
 layout: post
 title:  "Cutting the Gordian Knot. From Monolith to Modular"
 date:   2023-09-15 19:40:00 +0100
-categories: blog
 ---
 
 ![Screenshot]({{ "/assets/img/alexander-gordian-knot.webp" | absolute_url }})
