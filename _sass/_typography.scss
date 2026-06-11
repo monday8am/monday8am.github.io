@@ -109,11 +109,15 @@ Gist Embeds
 ---------------------------------------*/
 
 .gist {
-	font-size: 14px;
+	font-size: 14px !important;
 
 	pre,
-	code {
-		font-size: inherit;
+	code,
+	.blob-code-inner,
+	.blob-num,
+	.highlight,
+	.gist-meta {
+		font-size: inherit !important;
 		background-color: transparent;
 		padding: 0;
 		border-radius: 0;
