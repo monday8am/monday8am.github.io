@@ -115,8 +115,7 @@ Gist Embeds
 	code,
 	.blob-code-inner,
 	.blob-num,
-	.highlight,
-	.gist-meta {
+	.highlight {
 		font-size: inherit !important;
 		background-color: transparent;
 		padding: 0;
@@ -125,6 +124,10 @@ Gist Embeds
 		white-space: pre;
 		word-wrap: normal;
 		line-height: inherit;
+	}
+
+	.gist-meta {
+		font-size: inherit !important;
 	}
 }
 
