@@ -1,0 +1,1120 @@
+<title>Hold the Band</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a bar counter. The mission on top; the terminal and the guests' bands on the left;
+   the tap's route and the coach's running commentary on the right. Stacks to one column on a phone. */
+:root {
+  --ground: #eceef4; --panel: #ffffff; --ink: #191c2b; --muted: #5b6074; --line: #d5d8e3;
+  --accent: #3a3fbf; --accent-soft: #e3e4fb;
+  --ok: #23804a; --ok-soft: #dcf1e3; --warn: #9a5800; --warn-soft: #f8ead3; --bad: #bd2f2a; --bad-soft: #f9dfdd;
+  --device: #262833; --device-edge: #3b3e4d; --device-ink: #e9ebf3; --device-dim: #9ea3b5;
+  --lcd: #dde9e2; --lcd-ink: #13302a; --lcd-dim: #4b675d; --lcd-ok: #1c6b3c; --lcd-warn: #8a4f00; --lcd-bad: #a3261f;
+  --on-ok: #ffffff;
+  --band-a: #d4503a; --band-b: #12837a; --band-c: #85765a; --band-ink: #ffffff;
+  --sticky: #ffe07a; --sticky-ink: #3a2f00;
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #11131b; --panel: #1a1d28; --ink: #e7e9f2; --muted: #9ba1b5; --line: #2d3142;
+    --accent: #a3a7ff; --accent-soft: #272b57;
+    --ok: #6fcf8f; --ok-soft: #173524; --warn: #f0b050; --warn-soft: #3b2c12; --bad: #ff8a80; --bad-soft: #3f1b19;
+    --device: #2b2e3b; --device-edge: #444859; --device-ink: #e9ebf3; --device-dim: #a2a7b9;
+    --band-a: #e0604a; --band-b: #1a978d; --band-c: #978766; --on-ok: #0d2416;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #11131b; --panel: #1a1d28; --ink: #e7e9f2; --muted: #9ba1b5; --line: #2d3142;
+  --accent: #a3a7ff; --accent-soft: #272b57;
+  --ok: #6fcf8f; --ok-soft: #173524; --warn: #f0b050; --warn-soft: #3b2c12; --bad: #ff8a80; --bad-soft: #3f1b19;
+  --device: #2b2e3b; --device-edge: #444859; --device-ink: #e9ebf3; --device-dim: #a2a7b9;
+  --band-a: #e0604a; --band-b: #1a978d; --band-c: #978766; --on-ok: #0d2416;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 24px 56px; display: grid; gap: 18px; }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; } }
+code, .mono { font-family: var(--font-mono); font-size: .84em; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: .02em; text-transform: uppercase; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+
+/* Header and level strip */
+.head { display: grid; gap: 14px; }
+.title-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 7vw, 64px); line-height: .95; letter-spacing: .01em; text-transform: uppercase; }
+.lede { margin: 0; max-width: 68ch; color: var(--muted); }
+.score { font-family: var(--font-mono); font-size: 13px; color: var(--muted); white-space: nowrap; }
+.levels { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.lvl { flex: 0 0 auto; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: grid; gap: 0; text-align: left; min-width: 104px; }
+.lvl .num { font-family: var(--font-display); font-weight: 800; font-size: 18px; line-height: 1.1; }
+.lvl .nm { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.lvl .stars { font-size: 12px; color: var(--muted); letter-spacing: 2px; }
+.lvl .stars .got { color: var(--warn); }
+.lvl:hover { border-color: var(--accent); }
+.lvl[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); }
+
+/* Cards */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+
+/* Mission */
+.mission { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 28px; }
+@media (max-width: 860px) { .mission { grid-template-columns: minmax(0, 1fr); } }
+.mission h2 { font-size: 30px; }
+.mission .story { margin: 0; max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-family: var(--font-mono); font-size: 12px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--ground); white-space: nowrap; }
+.chip.accent { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.goals { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.goals li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; align-items: start; }
+.goals .box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 14px; font-weight: 700; margin-top: 1px; }
+.goals li.done .box { background: var(--ok); border-color: var(--ok); color: var(--panel); }
+.goals li.done span { color: var(--muted); text-decoration: line-through; }
+.goals li.next .box { border-color: var(--accent); }
+.goals li.next span { font-weight: 700; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--ground); border-radius: 8px; padding: 7px 13px; cursor: pointer; font-size: 14.5px; }
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--panel); font-weight: 700; }
+.btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.howto { font-size: 14px; color: var(--muted); margin: 0; }
+
+/* Level complete + quiz */
+.done-box { border: 2px solid var(--ok); background: var(--ok-soft); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; }
+.done-box h3 { font-family: var(--font-display); font-weight: 800; font-size: 22px; text-transform: uppercase; color: var(--ok); }
+.done-box ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.quiz { display: grid; gap: 8px; }
+.quiz .q { font-weight: 700; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 12px; cursor: pointer; font-size: 15px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); font-weight: 700; }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+.opt:disabled { cursor: default; }
+.why { margin: 0; font-size: 14.5px; }
+
+/* Stage */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.counter { display: grid; gap: 16px; min-width: 0; }
+
+.device { background: var(--device); border: 1px solid var(--device-edge); border-radius: 26px; padding: 16px 18px 20px; display: grid; gap: 14px; color: var(--device-ink); max-width: 440px; width: 100%; justify-self: center; box-shadow: 0 10px 24px -14px rgba(10, 12, 20, .55); }
+.dev-top { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--device-dim); }
+.dev-top .model { margin-left: auto; letter-spacing: .08em; text-transform: uppercase; }
+.led { width: 10px; height: 10px; border-radius: 50%; background: var(--device-edge); }
+.led.on { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+.lcd { background: var(--lcd); color: var(--lcd-ink); border-radius: 10px; padding: 12px 14px; min-height: 132px; display: grid; gap: 4px; align-content: start; }
+.lcd .scr { font-family: var(--font-mono); font-size: 12px; color: var(--lcd-dim); }
+.lcd .main { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1.05; text-transform: uppercase; }
+.lcd .sub { font-size: 14px; }
+.lcd .said { font-family: var(--font-mono); font-size: 11.5px; color: var(--lcd-dim); overflow-wrap: anywhere; }
+.lcd.ok .main { color: var(--lcd-ok); }
+.lcd.warn .main { color: var(--lcd-warn); }
+.lcd.bad .main { color: var(--lcd-bad); }
+
+.reader { position: relative; height: 96px; border-radius: 14px; border: 2px dashed var(--device-edge); display: grid; place-items: center; font-family: var(--font-mono); font-size: 13px; color: var(--device-dim); overflow: hidden; text-align: center; padding-inline: 10px; }
+.reader.hold { border-style: solid; border-color: var(--device-dim); color: var(--device-ink); }
+.reader.live { border-color: var(--ok); color: var(--device-ink); }
+.reader.live::before, .reader.live::after { content: ""; position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; border: 2px solid var(--ok); animation: ring 1.4s ease-out infinite; }
+.reader.live::after { animation-delay: .7s; }
+@keyframes ring { from { transform: scale(.4); opacity: .9; } to { transform: scale(4); opacity: 0; } }
+.reader .rtext { position: relative; }
+
+.memory { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 10px; }
+.sticky { background: var(--sticky); color: var(--sticky-ink); border-radius: 3px; padding: 8px 10px; transform: rotate(-1.2deg); display: grid; gap: 2px; min-height: 64px; transition: transform .25s; }
+.sticky.empty { opacity: .55; }
+.sticky.fresh { transform: rotate(-1.2deg) scale(1.05); }
+.memory b { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.memory span { font-size: 13.5px; overflow-wrap: anywhere; }
+.stub { border: 1px dashed var(--device-dim); border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px; color: var(--device-ink); }
+.stub span { font-family: var(--font-mono); font-size: 12.5px; }
+.rearm { justify-self: stretch; background: var(--ok); color: var(--on-ok); border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+
+.bands { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.band { --c: var(--band-a); position: relative; border: 0; border-radius: 14px; padding: 12px 14px 12px 14px; cursor: grab; text-align: left; color: var(--band-ink); display: grid; gap: 2px; min-height: 104px; user-select: none; -webkit-user-select: none; touch-action: none; -webkit-touch-callout: none;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .11) 0 2px, transparent 2px 6px), var(--c); transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 0 -1px rgba(0, 0, 0, .22); }
+.band[data-band="B"] { --c: var(--band-b); }
+.band[data-band="C"] { --c: var(--band-c); }
+.band .bname { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; }
+.band .bdata { font-family: var(--font-mono); font-size: 12.5px; }
+.band .bhint { font-size: 13px; opacity: .92; margin-top: auto; }
+.band .chipdot { position: absolute; right: 14px; top: 14px; width: 26px; height: 20px; border-radius: 4px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .18); }
+.band.held { transform: translateY(-8px) scale(1.02); box-shadow: 0 14px 18px -8px rgba(0, 0, 0, .45); cursor: grabbing; }
+.band.locked { filter: saturate(.25); opacity: .6; cursor: not-allowed; }
+.band.damaged .chipdot { background: repeating-linear-gradient(45deg, rgba(255, 255, 255, .85) 0 4px, rgba(0, 0, 0, .25) 4px 7px); }
+
+/* Track */
+.side { display: grid; gap: 18px; min-width: 0; }
+.track { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.st { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; position: relative; }
+.st:not(:last-child)::after { content: ""; position: absolute; left: 16px; top: 38px; bottom: -8px; width: 2px; background: var(--line); }
+.st .dot { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel); display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 17px; position: relative; z-index: 1; }
+.st b { display: block; font-size: 16px; }
+.st .plain { display: block; font-size: 13.5px; color: var(--muted); }
+.st .tag { font-family: var(--font-mono); font-size: 11.5px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.st.off { opacity: .42; }
+.st.off .dot { border-style: dashed; }
+.st.done .dot { background: var(--ok); border-color: var(--ok); color: var(--panel); }
+.st.done .tag { background: var(--ok-soft); color: var(--ok); }
+.st.active .dot { border-color: var(--accent); color: var(--accent); animation: pulse 1s ease-in-out infinite; }
+.st.active .tag { background: var(--accent-soft); color: var(--accent); }
+.st.skip .dot { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.st.skip .tag { background: var(--accent-soft); color: var(--accent); }
+.st.bad .dot { background: var(--bad); border-color: var(--bad); color: var(--panel); }
+.st.bad .tag { background: var(--bad-soft); color: var(--bad); }
+.st.torn .dot { background: var(--warn); border-color: var(--warn); color: var(--panel); }
+.st.torn .tag { background: var(--warn-soft); color: var(--warn); }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 var(--accent-soft); } 50% { box-shadow: 0 0 0 7px var(--accent-soft); } }
+.endpill { border-radius: 10px; padding: 10px 12px; font-weight: 700; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.endpill code { font-weight: 400; }
+.endpill.ok { background: var(--ok-soft); color: var(--ok); }
+.endpill.warn { background: var(--warn-soft); color: var(--warn); }
+.endpill.bad { background: var(--bad-soft); color: var(--bad); }
+.endpill.none { background: var(--ground); color: var(--muted); font-weight: 400; }
+
+/* Coach */
+.feed { display: grid; gap: 8px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+.feed .tapno { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; margin-top: 2px; }
+.feed .tapno:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+.say { display: grid; gap: 2px; padding-left: 12px; border-left: 3px solid var(--line); }
+.say p { margin: 0; font-size: 15px; }
+.say code { color: var(--muted); overflow-wrap: anywhere; }
+.say.ok { border-color: var(--ok); }
+.say.warn { border-color: var(--warn); }
+.say.bad { border-color: var(--bad); }
+.say.goal { border-color: var(--ok); background: var(--ok-soft); border-radius: 0 6px 6px 0; padding: 6px 10px; }
+.say.goal p { font-weight: 700; color: var(--ok); }
+.say.hint { border-color: var(--accent); background: var(--accent-soft); border-radius: 0 6px 6px 0; padding: 6px 10px; }
+.feed .empty { color: var(--muted); font-size: 15px; margin: 0; }
+
+/* Sort the fleet */
+.sort { gap: 16px; }
+.sort .op { font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 6vw, 52px); line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+.types { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.type { text-align: left; border: 1px solid var(--line); background: var(--ground); border-radius: 10px; padding: 12px 14px; cursor: pointer; display: grid; gap: 4px; }
+.type b { font-family: var(--font-mono); font-size: 15px; }
+.type span { font-size: 14px; color: var(--muted); }
+.type:hover:not(:disabled) { border-color: var(--accent); }
+.type.right { border-color: var(--ok); background: var(--ok-soft); }
+.type.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.type:disabled { cursor: default; }
+.routes { display: grid; gap: 6px; font-family: var(--font-mono); font-size: 13px; }
+
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 4px; max-width: 110ch; }
+footer a { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reader.live::before, .reader.live::after, .st.active .dot { animation: none; }
+  .band, .sticky { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div class="eyebrow">Cashless · wristband taps · feature/wristband-tap-operation</div>
+    <div class="title-row">
+      <h1>Hold the Band</h1>
+      <span class="score" id="score"></span>
+    </div>
+    <p class="lede">Nine short levels on how a cashless terminal handles a wristband tap. Press and hold a band to put it on the reader, and let go to take it away. Letting go at the wrong moment is half the game.</p>
+    <nav class="levels" id="levels" aria-label="Levels"></nav>
+  </header>
+
+  <section class="card mission" id="mission" aria-live="polite"></section>
+
+  <section class="stage" id="stage">
+    <div class="counter">
+      <div class="device" aria-label="The terminal">
+        <div class="dev-top"><span class="led" id="led"></span><span id="ledText"></span><span class="model">POS · ITOS CM5</span></div>
+        <div class="lcd" id="lcd" aria-live="polite">
+          <span class="scr" id="lcdScr"></span>
+          <span class="main" id="lcdMain"></span>
+          <span class="sub" id="lcdSub"></span>
+          <span class="said" id="lcdSaid"></span>
+        </div>
+        <div class="reader" id="reader"><span class="rtext" id="readerText"></span></div>
+        <div class="memory">
+          <div class="sticky" id="sticky"><b>Journal · pending write</b><span id="journalText"></span></div>
+          <div class="stub"><b>Last used token</b><span id="tokenText"></span></div>
+        </div>
+        <button class="rearm" type="button" id="rearm" hidden>Next guest: switch the reader back on</button>
+      </div>
+      <div class="bands" id="bands"></div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <div class="row" style="justify-content: space-between"><h2>The tap, step by step</h2><span class="facts" id="routeFacts"></span></div>
+        <ol class="track" id="track"></ol>
+        <div id="trackEnd"></div>
+      </div>
+      <div class="card">
+        <h2>What just happened</h2>
+        <div class="feed" id="feed" tabindex="0" aria-label="Commentary"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card sort" id="sort" hidden></section>
+
+  <footer>
+    <span>The rules follow <code>step</code> in <code>TapStateMachine.kt</code>, <code>TapRunner.kt</code> and <code>WristbandTaps.kt</code> at <code>191d8c224</code>, ported from the <a href="https://claude.ai/artifact/H7ToQDSQymBebVufZmRvij" target="_blank" rel="noopener">Wristband Tap Machine explorer</a>. Use the explorer to see every transition and every operation.</span>
+    <span>Simplified for teaching: amounts and tokens are made up, the screen is always ready, and the used-token rule is cashless's own. The SDK today reads a band even on a resume; the game leaves that ignored read out. Band C and its uid are invented for the damaged-band level.</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+const HAS_DOM = typeof document !== "undefined";
+
+// ---------------------------------------------------------------- the fleet data (same as the explorer)
+const OPS = {
+  ERASE:          { type: "WRITE",      resumes: false, screen: "LimPulsera" },
+  RESTORE:        { type: "WRITE",      resumes: true,  screen: "RegPulsera" },
+  CHARGE:         { type: "READ_WRITE", resumes: true,  screen: "Ticket" },
+  CHECK_BALANCE:  { type: "READ_WRITE", resumes: true,  screen: "Comprobar" },
+  CHECK_CUPS:     { type: "READ_WRITE", resumes: true,  screen: "CantidadVasos" },
+  TOP_UP:         { type: "READ_WRITE", resumes: true,  screen: "RecargarPulsera" },
+  TOP_UP_PROMO:   { type: "READ_WRITE", resumes: true,  screen: "RecargarPromos" },
+  TOP_UP_PACK:    { type: "READ_WRITE", resumes: true,  screen: "AnadirPackRecarga" },
+  REFUND_ANY:     { type: "READ_WRITE", resumes: true,  screen: "DevolverCualquierOp" },
+  REFUND_LAST:    { type: "READ_WRITE", resumes: true,  screen: "DevolverUltOp" },
+  REFUND_CUPS:    { type: "READ_WRITE", resumes: true,  screen: "DevolverVasos" },
+  ADD_STAMP:      { type: "READ_WRITE", resumes: true,  screen: "AnadirCuno" },
+  MARK_MINOR:     { type: "READ_WRITE", resumes: true,  screen: "AplicarMenor" },
+  UNMARK_MINOR:   { type: "READ_WRITE", resumes: true,  screen: "EliminarMenor" },
+  LINK_WAITER:    { type: "READ",       resumes: false, screen: "VincularConCamarero" },
+  WAITER_ACTION:  { type: "READ",       resumes: false, screen: "AccionCamareros" },
+  REGISTER_WAITER:{ type: "READ",       resumes: false, screen: "AltaCamarero" },
+  WAITER_INFO:    { type: "READ",       resumes: false, screen: "InfoCamarero" },
+  ADMIN_ACCESS:   { type: "READ",       resumes: false, screen: "HomeVMC · InicializandoPinpad" },
+  FIND_ORDERS:    { type: "ID",         resumes: false, screen: "Pedidos" },
+};
+const writes = (op) => OPS[op].type === "READ_WRITE" || OPS[op].type === "WRITE";
+const ONLY_THIS = new Set(["REFUND_ANY", "REFUND_LAST", "REFUND_CUPS"]);
+const UID = { A: "04A1B2C3D4E5F6", B: "04FFEEDDCCBBAA", C: "04C7E2A9105D3B" };
+const bandOf = (uid) => Object.keys(UID).find((k) => UID[k] === uid) || "";
+const FAULT_REFUSAL = {
+  AUTHENTICATION_REFUSED: "AUTHENTICATION", SECTOR_NOT_KEYED: "AUTHENTICATION",
+  UNRESPONSIVE: "LECTURA", UNSUPPORTED_CHIP: "LECTURA", VERIFICATION_FAILED: "ESCRITURA",
+  DATA_CORRUPT: "VALIDATION", NOT_AN_EVENT_WRISTBAND: "VALIDATION",
+};
+
+// ---------------------------------------------------------------- step: TapStateMachine.kt (line for line, as in the explorer)
+function step(state, event, op, unfinished) {
+  const o = OPS[op];
+  if (event.kind === "Faulted") return { kind: "Ended", end: "Faulted", fault: event.fault };
+  if (event.kind === "Detected" && o.type === "ID") return { kind: "Ended", end: "Detected", uid: event.uid };
+  if (event.kind === "Detected") return detect(event.uid, o.resumes ? unfinished : null);
+  if (state.kind === "Detected" && event.kind === "Authenticated") return authenticated(state, op);
+  if (state.kind === "Authenticated" && event.kind === "Read") return judge(state, event, op);
+  if (state.kind === "Deciding" && event.kind === "Decided") return decided(state, event.verdict, op);
+  if (state.kind === "Writing" && event.kind === "Written")
+    return { kind: "Ended", end: "Written", record: event.record, previousToken: state.previousToken };
+  return state;
+}
+function detect(uid, unfinished) {
+  if (!unfinished) return { kind: "Detected", uid, unfinished: null };
+  if (unfinished.id === uid) return { kind: "Detected", uid, unfinished };
+  return { kind: "Ended", end: "Refused", refusal: "NO_ES_LA_MISMA_PULSERA_QUE_ANTES" };
+}
+function authenticated(state, op) {
+  if (state.unfinished)
+    return { kind: "Deciding", uid: state.uid, record: state.unfinished, previousToken: "", resumed: true };
+  if (OPS[op].type === "WRITE")
+    return { kind: "Deciding", uid: state.uid, record: { id: state.uid, saldo: 0, token: "", uidOnly: true }, previousToken: "", resumed: false };
+  return { kind: "Authenticated", uid: state.uid };
+}
+function judge(state, event, op) {
+  if (!event.verified) return { kind: "Ended", end: "Faulted", fault: "DATA_CORRUPT" };
+  if (!writes(op)) return { kind: "Ended", end: "Read", record: event.record };
+  return { kind: "Deciding", uid: state.uid, record: event.record, previousToken: event.record.token, resumed: false };
+}
+function decided(state, verdict, op) {
+  switch (verdict.kind) {
+    case "Refused": return { kind: "Ended", end: "Refused", refusal: verdict.refusal };
+    case "Write": return {
+      kind: "Writing", uid: state.uid, target: verdict.target, previousToken: state.previousToken,
+      resumed: state.resumed, journals: journals(verdict.target, op, state.resumed),
+    };
+    case "Show": return { kind: "Ended", end: "Read", record: verdict.record };
+    case "NothingToWrite": return { kind: "Ended", end: "Over" };
+  }
+}
+// Rule 3a.
+const journals = (target, op, resumed) => !resumed && OPS[op].resumes && target.id !== "";
+
+// ---------------------------------------------------------------- formatting
+const money = (cents) => (cents / 100).toFixed(2) + " €";
+const shortTok = (t) => (t ? t.slice(0, 4) + "…" + t.slice(-2) : "");
+function summary(r) {
+  if (!r) return "nothing";
+  if (!r.id) return "a cleared record that names no band";
+  const parts = ["band " + bandOf(r.id), money(r.saldo)];
+  if (r.stamps) parts.push(r.stamps + " stamp" + (r.stamps > 1 ? "s" : ""));
+  if (r.minor) parts.push("minor");
+  return parts.join(" · ");
+}
+
+// ---------------------------------------------------------------- stations of a tap
+const STATIONS = [
+  ["detect", "Detect", "The reader sees a band"],
+  ["auth", "Authenticate", "The chip lets the terminal in"],
+  ["read", "Read", "The record comes off the chip"],
+  ["decide", "Decide", "The screen's flow says what to do"],
+  ["write", "Write", "The new record goes onto the chip"],
+];
+function routeFor(op) {
+  switch (OPS[op].type) {
+    case "ID": return ["detect"];
+    case "READ": return ["detect", "auth", "read"];
+    case "WRITE": return ["detect", "auth", "decide", "write"];
+    default: return ["detect", "auth", "read", "decide", "write"];
+  }
+}
+const TYPE_PLAIN = {
+  WRITE: "detect, authenticate, write. It never reads the band.",
+  READ_WRITE: "read the band, let the flow decide, write the result.",
+  READ: "read the band and answer. Nothing is written.",
+  ID: "the band's uid is the whole answer.",
+};
+
+// ---------------------------------------------------------------- levels
+const LEVELS = [
+  {
+    name: "First top-up", op: "TOP_UP", bands: ["A"],
+    story: "A guest wants 10 € on their band. The top-up screen (RecargarPulsera) arms the reader for TOP_UP. Hold band A on the reader, and keep holding until the screen says it's done.",
+    goals: [{ text: "Top up band A by 10 €", test: (o) => o.t === "written" && o.band === "A" }],
+    hint: (o) => (o.t === "torn" ? "You let go too soon. Hold band A until the screen says the top-up is done." : null),
+    lesson: [
+      "A top-up is a READ_WRITE tap: detect, authenticate, read, decide, write.",
+      "The write goes into the journal before the chip is touched, and the band's old token is marked as used.",
+      "Once the screen has its answer, the reader switches off until the screen arms it again.",
+    ],
+    quiz: {
+      q: "Why does the write go into the journal before the chip is touched?",
+      options: ["So the server gets a copy of every sale", "So a write that gets cut short can be finished on the band's next tap", "Because the chip can only take one write at a time"],
+      right: 1,
+      why: "If the band leaves mid-write, the journal still says what was meant to land. The band's next tap on a screen that resumes finishes exactly that write.",
+    },
+  },
+  {
+    name: "Pull it away", op: "TOP_UP", bands: ["A"],
+    story: "Guests take their band away too early all the time. Start the same top-up, but let go of band A while it is being written. Then hold it on the reader again.",
+    goals: [
+      { text: "Let go of band A while the top-up is being written", test: (o) => o.t === "torn" && o.stage === "write" && o.journalled },
+      { text: "Hold band A again and let the top-up finish", test: (o) => o.t === "written" && o.band === "A" && o.resumed },
+    ],
+    hint: (o, g) => {
+      if (o.t === "torn" && o.stage !== "write") return "Too early: nothing had been decided yet, so there's nothing to finish. Let go during the Write step.";
+      if (o.t === "written" && !o.resumed && !g.goals[0]) return "It landed, so nothing was cut short. Switch the reader back on and let go during the Write step this time.";
+      return null;
+    },
+    lesson: [
+      "A band taken away mid-write is dropped quietly. The screen hears nothing, as in legacy.",
+      "The journal keeps the write and the reader stays on.",
+      "The band's next tap resumes: it skips the read, writes the journalled record and spends no new token. The 10 € land once.",
+    ],
+    quiz: {
+      q: "On the second tap, why weren't another 10 € added?",
+      options: ["The chip remembered the half-finished write", "The server spotted the duplicate", "The flow got the journalled record back and handed it on unchanged"],
+      right: 2,
+      why: "A resume decides at authenticate with resumed = true. The flow hands the journalled record back, so the write lands as it was first decided. Nothing new is decided, journalled or spent.",
+    },
+  },
+  {
+    name: "The next guest", op: "CHARGE", bands: ["B", "A"],
+    setup: (g) => { const a = g.bands.A; g.journal = { operation: "TOP_UP", target: { ...a, saldo: a.saldo + 1000 } }; },
+    story: "Earlier, band A's top-up was cut short and is still in the journal. Now the bar screen (Ticket) arms CHARGE for the next guest, who holds out band B.",
+    locked: (b, g) => (b === "A" && !g.goals[0] ? "Band A's guest has walked off for now. Try band B first." : null),
+    goals: [
+      { text: "Try to charge band B", test: (o) => o.t === "refused" && o.band === "B" },
+      { text: "Band A's guest is back: hold band A on this screen", test: (o) => o.t === "written" && o.band === "A" && o.resumed },
+    ],
+    lesson: [
+      "While a write is pending, any other band is refused at detect, before anything is read, so B isn't charged as if it were A (APPSIDAS-2687).",
+      "Band A's top-up was finished by Ticket's screen, not the top-up screen. The journal is shared, and every screen that resumes checks it.",
+      "Legacy did the same after a process death. Whether a bar screen should finish a top-up is still an open product question.",
+    ],
+    quiz: {
+      q: "Why was band B refused before anything was read?",
+      options: ["Band A has a write pending, and B isn't band A", "Band B didn't have enough balance", "Ticket only accepts band A"],
+      right: 0,
+      why: "At detect the runner reads the journal first. A pending write for another band ends the tap with NO_ES_LA_MISMA_PULSERA_QUE_ANTES, and the reader stays on for the right band.",
+    },
+  },
+  {
+    name: "The right band", op: "REFUND_LAST", bands: ["B", "A"],
+    story: "A guest wants their last purchase back. The refund screen (DevolverUltOp) knows the purchase was on band A, so it arms REFUND_LAST for band A only. Their friend holds out band B first.",
+    locked: (b, g) => (b === "A" && !g.goals[0] ? "Let the friend try band B first." : null),
+    goals: [
+      { text: "Hold out band B", test: (o) => o.t === "turnedAway" && o.band === "B" },
+      { text: "Refund band A", test: (o) => o.t === "written" && o.band === "A" },
+    ],
+    lesson: [
+      "A screen can say at arming that it accepts one band only (Band.OnlyThis).",
+      "Any other band is turned away before the machine starts. The screen shows \"not the same band\".",
+      "The reader stays on, so the right band can follow straight away.",
+    ],
+    quiz: {
+      q: "Band B was turned away. How far did its tap get?",
+      options: ["It was detected, then refused", "Nowhere: the band check runs before the machine starts", "It was read, then refused"],
+      right: 1,
+      why: "The runner asks the flow whether it admits the band before it hands anything to the machine. The step table never sees band B.",
+    },
+  },
+  {
+    name: "Erase", op: "ERASE", bands: ["A"],
+    story: "Wiping a band (LimPulsera) is a WRITE that doesn't resume. Start an erase on band A and let go while it is being written. Then look at the journal on the terminal.",
+    goals: [{ text: "Let go of band A while it is being erased", test: (o) => o.t === "torn" && o.stage === "write" }],
+    hint: (o) => {
+      if (o.t === "torn") return "Too early: the erase hadn't started writing. Let go during the Write step.";
+      if (o.t === "written") return "Erased all the way. Switch the reader back on and let go during the Write step this time.";
+      return null;
+    },
+    lesson: [
+      "ERASE is a WRITE: there's no read, the band's uid is enough.",
+      "It never goes into the journal (rule 3a): it doesn't resume, and its cleared record names no band.",
+      "The journal is shared. A half-done erase left there would block every other band on the next screen that resumes, and that screen would finish it as its own operation.",
+    ],
+    quiz: {
+      q: "Why doesn't a cut-short erase go into the journal?",
+      options: ["The next screen that resumes would pick it up and finish it as its own operation", "An erase is too quick to be cut short", "A cleared band has no balance to protect"],
+      right: 0,
+      why: "Every resuming screen checks the one journal. Ticket, for example, would record a charge for an erase, and refuse every other band until then.",
+    },
+  },
+  {
+    name: "Restore", op: "RESTORE", bands: ["A"],
+    setup: (g) => { g.bands.A = { id: "", saldo: 0, token: "", stamps: 0, minor: false }; },
+    story: "Band A was wiped by mistake. The registration screen (RegPulsera) arms RESTORE, which writes the band's record back from the server. Hold band A until it's restored.",
+    goals: [{ text: "Restore band A", test: (o) => o.t === "written" && o.band === "A" }],
+    hint: (o) => (o.t === "torn" ? "Let go and it has to start again. Hold band A until the screen says it's restored." : null),
+    lesson: [
+      "RESTORE is a WRITE that resumes: no read, and its write is journalled because its record names the band.",
+      "The flow asks the server for the record inside the tap. The SDK gives a tap 5 s, where the old library gave 15 s.",
+      "That's why APPSIDAS-2877, a configurable tap budget, blocks shipping the branch.",
+    ],
+    quiz: {
+      q: "RESTORE writes without reading the band. Where does the record come from?",
+      options: ["The journal", "The band's last read on this terminal", "The server, asked during the tap"],
+      right: 2,
+      why: "The flow calls datos_pulsera.php while the band is on the reader, as develop does. The whole call has to fit in the tap's time budget.",
+    },
+  },
+  {
+    name: "Just the uid", op: "FIND_ORDERS", bands: ["A", "B"],
+    story: "The orders screen (Pedidos) looks up a guest's orders. All it needs is the band's uid. Look up band A, then band B.",
+    goals: [
+      { text: "Look up band A", test: (o) => o.t === "uid" && o.band === "A" },
+      { text: "Look up band B", test: (o) => o.t === "uid" && o.band === "B" },
+    ],
+    lesson: [
+      "ID is the shortest tap: it ends at detect. Nothing is authenticated, read or written.",
+      "A tap that ends at detect never switches the reader off, so Pedidos keeps listening for the next band.",
+    ],
+    quiz: {
+      q: "Why could band B be looked up without switching the reader back on?",
+      options: ["A tap that ends at detect never switches the reader off", "ID taps don't use the reader", "Pedidos switches it back on after every tap"],
+      right: 0,
+      why: "The reader switches off when a screen gets its answer after authenticating. An ending at detect is the exception, for Pedidos and for refusals at detect.",
+    },
+  },
+  {
+    name: "Damaged band", op: "CHECK_BALANCE", bands: ["C", "A"],
+    story: "One guest's band has a damaged record. The balance screen (Comprobar) arms CHECK_BALANCE. Check band C, then check band A without switching the reader back on.",
+    goals: [
+      { text: "Check band C's balance", test: (o) => o.t === "fault" && o.band === "C" },
+      { text: "Check band A's balance", test: (o) => o.t === "read" && o.band === "A" },
+    ],
+    hint: (o) => (o.t === "torn" ? "Hold the band until the screen answers." : null),
+    lesson: [
+      "A record that fails its check ends the tap with a fault: DATA_CORRUPT.",
+      "The screen shows it as a validation refusal, the message legacy showed.",
+      "A fault keeps the reader on, so the next band can be checked straight away.",
+    ],
+    quiz: {
+      q: "What did the screen hear for band C?",
+      options: ["A balance of 0.00 €", "Nothing", "A validation refusal"],
+      right: 2,
+      why: "The machine ends Faulted(DATA_CORRUPT). TapScreen turns onFault into onRefused(VALIDATION) for the Java screens.",
+    },
+  },
+  { name: "Sort the fleet", sort: true },
+];
+
+const SORT = [
+  ["TOP_UP", "It reads the balance, the flow adds to it, and the new balance is written."],
+  ["FIND_ORDERS", "Pedidos only needs to know which band it is."],
+  ["ERASE", "It wipes the band without reading it first. It doesn't resume: another screen must never finish a half-done erase."],
+  ["LINK_WAITER", "It reads the waiter's band to link it. Nothing is written."],
+  ["RESTORE", "The record comes from the server, so there's nothing to read. It resumes, because its record names the band."],
+  ["REFUND_CUPS", "It reads the band, the flow works out the refund, and the result is written."],
+  ["ADMIN_ACCESS", "It reads the admin's band and answers. Nothing is written."],
+  ["MARK_MINOR", "It reads the record, the flow sets the minor flag, and writes it back."],
+];
+
+// ---------------------------------------------------------------- the terminal
+let tokenSeq = 0;
+const TOKENS = ["93E6F1A40D7C", "5B20C9E83F16", "E81A4D7C92B0", "2DF5B7016AC3", "A7C3E90B41D5", "6E0F2B8C7A19", "D4B91E3F0C62", "08A6D5F2E7B4"];
+const mint = () => TOKENS[tokenSeq++ % TOKENS.length];
+const freshBands = () => ({
+  A: { id: UID.A, saldo: 1250, token: "7F3A91C0B2E4", stamps: 0, minor: false },
+  B: { id: UID.B, saldo: 400, token: "C41D08E7A5B2", stamps: 0, minor: false },
+  C: { id: UID.C, saldo: 800, token: "3C9E07B1D2F4", stamps: 0, minor: false, damaged: true },
+});
+
+const G = {
+  li: 0, op: "TOP_UP", verdict: "write",
+  bands: freshBands(), journal: null, usedToken: "", armed: true, state: { kind: "Idle" },
+  held: null, tapActive: false, stateResumed: false, tapNo: 0, feed: [], goals: [], quiz: null, sort: null,
+  track: null, lcd: null, journalFresh: false, speed: 1, timer: null, manual: false,
+};
+
+function refusalFor(op) {
+  if (op === "ADD_STAMP") return "YA_TIENE_CUNO";
+  if (op === "CHARGE" || op.startsWith("REFUND")) return "SALDO_INSUFICIENTE";
+  return "ANULADA";
+}
+function targetFor(op, r) {
+  const t = { ...r };
+  switch (op) {
+    case "TOP_UP": t.saldo += 1000; break;
+    case "TOP_UP_PROMO": t.saldo += 500; break;
+    case "TOP_UP_PACK": t.saldo += 2000; break;
+    case "CHARGE": t.saldo -= 450; break;
+    case "REFUND_ANY": case "REFUND_LAST": case "REFUND_CUPS": t.saldo += 450; break;
+    case "ADD_STAMP": t.stamps = (t.stamps || 0) + 1; break;
+    case "MARK_MINOR": t.minor = true; break;
+    case "UNMARK_MINOR": t.minor = false; break;
+    case "ERASE": return { id: "", saldo: 0, token: "", stamps: 0, minor: false };
+    case "RESTORE": return { id: r.id, saldo: 2500, token: "", stamps: 0, minor: false };
+  }
+  delete t.uidOnly;
+  return t;
+}
+function decide(record, resumed) {
+  const op = G.op, v = G.verdict;
+  if (v === "refuse") return { kind: "Refused", refusal: refusalFor(op) };
+  if (resumed) return { kind: "Write", target: record };
+  if (v === "nothing") return { kind: "NothingToWrite" };
+  if (v === "show") return { kind: "Show", record };
+  if (op === "RESTORE") say("The flow asks the server (datos_pulsera.php) for this band's record, while the band is still on the reader. The SDK allows a tap 5 s, the old library allowed 15 s: that's why APPSIDAS-2877 blocks shipping.", null, "hint");
+  return { kind: "Write", target: targetFor(op, record) };
+}
+function admits(uid) {
+  if (ONLY_THIS.has(G.op) && uid !== UID.A) return false;
+  return true;
+}
+
+// ---------------------------------------------------------------- commentary
+function say(text, code, tone) { G.feed.push({ text, code: code || null, tone: tone || "" }); }
+const DONE_TEXT = { TOP_UP: "Top-up done", CHARGE: "Sale done", REFUND_LAST: "Refund done", ERASE: "Band erased", RESTORE: "Band restored" };
+const REFUSAL_TEXT = { NO_ES_LA_MISMA_PULSERA_QUE_ANTES: "Not the same band as before", SALDO_INSUFICIENTE: "Not enough balance", VALIDATION: "Band not valid" };
+
+// ---------------------------------------------------------------- the runner: TapRunner.kt, told out loud
+function runnerOn(event) {
+  const before = G.state;
+  const b = G.held;
+  if (event.kind === "Detected" && !admits(event.uid)) {
+    say(`Band ${b} is turned away before the machine even starts: this screen accepts only band A, the band it chose.`, `flow.admits(${b}) = false → onTurnedAway(${b})`, "warn");
+    say("The reader stays on, waiting for the right band.");
+    G.lcd = { tone: "warn", main: "Not the same band", said: `onTurnedAway(${b})` };
+    G.track.st.detect = "bad"; G.track.notes.detect = "Turned away by the screen's band rule";
+    G.track.end = { tone: "warn", label: "Turned away", code: `onTurnedAway(${b})` };
+    outcome({ t: "turnedAway", band: b });
+    return "turnedAway";
+  }
+  let unfinished = null;
+  if (event.kind === "Detected" && OPS[G.op].resumes) {
+    unfinished = G.journal ? G.journal.target : null;
+    say(G.journal
+      ? `The reader sees band ${b}. First the terminal checks the journal: a ${G.journal.operation} is pending for band ${bandOf(G.journal.target.id)}.`
+      : `The reader sees band ${b}. First the terminal checks the journal: nothing is pending.`, "WristbandJournal");
+  } else if (event.kind === "Detected" && OPS[G.op].type !== "ID") {
+    say(`The reader sees band ${b}. ${G.op} doesn't resume, so the terminal doesn't even look at the journal.`);
+  }
+  const next = step(before, event, G.op, unfinished);
+  if (next === before) return "ignored";
+  G.state = next;
+  trackOn(event, next);
+  tell(event, next);
+  carryOut(next);
+  if (next.kind === "Deciding") {
+    const verdict = decide(next.record, next.resumed);
+    runnerOn({ kind: "Decided", verdict });
+  }
+  return "moved";
+}
+
+function tell(event, s) {
+  const b = G.held;
+  switch (event.kind) {
+    case "Detected":
+      if (s.kind === "Detected" && s.unfinished) say(`That pending write is for this very band, so this tap will finish it instead of starting a new ${G.op}.`, `Detected(${b}, unfinished)`, "hint");
+      else if (s.kind === "Detected") say("A fresh tap.", `Detected(${b})`);
+      else if (s.end === "Detected") say(`That's all this screen needs: the band's uid. Nothing is authenticated or read.`, `Detected(${b}) → Ended.Detected`, "ok");
+      else if (s.end === "Refused") say(`Refused straight away: band ${bandOf(G.journal.target.id)} has a write pending, and this is band ${b}. Reading on would treat ${b} as if it were ${bandOf(G.journal.target.id)} (APPSIDAS-2687).`, "Ended.Refused(NO_ES_LA_MISMA_PULSERA_QUE_ANTES)", "warn");
+      break;
+    case "Authenticated":
+      if (s.kind === "Deciding" && s.resumed) say("The chip lets the terminal in. This is a resume, so there's no need to read: the journal already holds the record to write.", "Authenticated → Deciding(resumed = true)");
+      else if (s.kind === "Deciding") say(`The chip lets the terminal in. ${G.op} is a WRITE: it never reads the band, it only needs to know which band it is.`, "Authenticated → Deciding(uid only)");
+      else say("The chip lets the terminal in. Now the record comes off it.", "Authenticated");
+      break;
+    case "Read":
+      if (s.kind === "Ended" && s.end === "Faulted") say("The record fails its integrity check. The tap ends with a fault.", "Ended.Faulted(DATA_CORRUPT)", "bad");
+      else if (s.kind === "Ended" && s.end === "Read") say(`The record is read: ${summary(s.record)}. A READ tap answers with that and never writes.`, "Ended.Read", "ok");
+      else say(`The record is read: ${summary(event.record)}.`, "Read → Deciding");
+      break;
+    case "Decided": {
+      const v = event.verdict;
+      if (v.kind === "Write" && s.resumed) say("The screen's flow gets the journalled record back and hands it on unchanged: the write goes ahead exactly as it was first decided.", "decide(resumed = true) → Write(same record)");
+      else if (v.kind === "Write") say(`The screen's flow decides what to write: ${summary(v.target)}.`, "decide → Write");
+      else if (v.kind === "Show") say(`The screen's flow decides to show the balance, ${money(v.record.saldo)}, rather than write anything.`, "decide → Show → Ended.Read", "ok");
+      else if (v.kind === "Refused") say(`The screen's flow refuses: ${v.refusal}.`, "decide → Refused", "warn");
+      else say("The screen's flow has nothing to write.", "decide → NothingToWrite");
+      break;
+    }
+    case "Written":
+      say(`The write lands: ${summary(s.record)}${s.record.id ? ", with a fresh token" : ""}.`, "Ended.Written", "ok");
+      break;
+  }
+}
+
+function carryOut(s) {
+  const b = G.held;
+  if (s.kind === "Writing") {
+    if (s.journals) {
+      G.journal = { operation: G.op, target: s.target }; G.journalFresh = true;
+      say(`Before touching the chip, the terminal writes the plan in the journal: "${G.op} pending, ${summary(s.target)}". If the band leaves now, the plan survives.`, `PendingWrite(${G.op}, …)`, "hint");
+    } else if (s.resumed) {
+      say("Nothing new goes in the journal: the first attempt already put it there.");
+    } else if (!OPS[G.op].resumes) {
+      say(`Nothing goes in the journal: ${G.op} doesn't resume, and its cleared record names no band (rule 3a).`, "Writing(journals = false)");
+    } else {
+      say("Nothing goes in the journal: the record names no band.", "Writing(journals = false)");
+    }
+    if (!s.resumed && OPS[G.op].type === "READ_WRITE") {
+      G.usedToken = s.previousToken;
+      say(`The band's old token, ${shortTok(s.previousToken)}, is marked as used, so that record can't be spent again.`, "UsedTokens.spent (cashless's rule)");
+    } else if (s.resumed) {
+      say("No token is marked: the first attempt already did.");
+    }
+    say("Writing to the chip. The band has to stay on the reader.");
+    G.lcd = { tone: "", main: "Writing…", sub: "Don't take the band away" };
+    return;
+  }
+  if (s.kind !== "Ended") return;
+  switch (s.end) {
+    case "Written":
+      if (G.journal) say("The journal is cleared: nothing is pending now.", "journal.forget()");
+      G.journal = null;
+      G.lcd = { tone: "ok", main: G.stateResumed ? "Pending write finished" : DONE_TEXT[G.op] || "Done", sub: summary(s.record), said: `onWritten(${summary(s.record)})` };
+      outcome({ t: "written", band: b, resumed: !!G.stateResumed });
+      break;
+    case "Read":
+      G.lcd = { tone: "ok", main: "Balance " + money(s.record.saldo), sub: "Band " + bandOf(s.record.id), said: "onRead(record)" };
+      outcome({ t: "read", band: b });
+      break;
+    case "Detected":
+      G.lcd = { tone: "ok", main: `Orders for band ${bandOf(s.uid)}`, sub: "Found by uid", said: `onDetected(${bandOf(s.uid)})` };
+      outcome({ t: "uid", band: b });
+      break;
+    case "Refused":
+      G.lcd = { tone: "warn", main: REFUSAL_TEXT[s.refusal] || "Refused", said: `onRefused(${s.refusal})` };
+      outcome({ t: "refused", band: b, refusal: s.refusal });
+      break;
+    case "Faulted":
+      say("The screen shows it the way legacy did: as a validation refusal.", `onFault(${s.fault}) → onRefused(${FAULT_REFUSAL[s.fault]})`);
+      G.lcd = { tone: "bad", main: REFUSAL_TEXT[FAULT_REFUSAL[s.fault]] || "Refused", said: `onFault(${s.fault}) → onRefused(${FAULT_REFUSAL[s.fault]})` };
+      outcome({ t: "fault", band: b, fault: s.fault });
+      break;
+    case "Over":
+      G.lcd = { tone: "", main: "Nothing to do", said: "(nothing delivered)" };
+      break;
+  }
+}
+
+function trackOn(event, s) {
+  const T = G.track;
+  switch (event.kind) {
+    case "Detected":
+      if (s.kind === "Ended" && s.end === "Refused") { T.st.detect = "bad"; T.notes.detect = "Another band has a write pending"; T.end = { tone: "warn", label: "Refused at detect", code: "NO_ES_LA_MISMA_PULSERA_QUE_ANTES" }; break; }
+      T.st.detect = "done";
+      if (s.kind === "Ended") { T.end = { tone: "ok", label: "Answered with the uid", code: "Ended.Detected" }; break; }
+      if (s.unfinished && T.st.read !== "off") { T.st.read = "skip"; T.notes.read = "Skipped: the journal already holds the record"; }
+      if (s.unfinished) { T.notes.decide = "The flow gets the journalled record back"; }
+      break;
+    case "Authenticated": T.st.auth = "done"; break;
+    case "Read":
+      if (s.kind === "Ended" && s.end === "Faulted") { T.st.read = "bad"; T.notes.read = "The record fails its check"; T.end = { tone: "bad", label: "Fault", code: "DATA_CORRUPT → VALIDATION" }; break; }
+      T.st.read = "done";
+      if (s.kind === "Ended") T.end = { tone: "ok", label: "Answered with the record", code: "Ended.Read" };
+      break;
+    case "Decided": {
+      const v = event.verdict;
+      if (v.kind === "Refused") { T.st.decide = "bad"; T.end = { tone: "warn", label: "Refused", code: v.refusal }; break; }
+      T.st.decide = "done";
+      if (v.kind === "Show") { T.st.write = "skip"; T.notes.write = "Skipped: the flow chose to show, not write"; T.end = { tone: "ok", label: "Balance shown", code: "Ended.Read" }; }
+      if (v.kind === "NothingToWrite") { T.st.write = "skip"; T.end = { tone: "none", label: "Nothing to write", code: "Ended.Over" }; }
+      if (v.kind === "Write" && !s.journals && !s.resumed) T.notes.write = "Not journalled: a cut here can't be finished later";
+      if (v.kind === "Write" && s.journals) T.notes.write = "Journalled first, then written";
+      break;
+    }
+    case "Written": T.st.write = "done"; T.end = { tone: "ok", label: "Written", code: "Ended.Written" }; break;
+  }
+}
+function activeStation() {
+  if (!G.tapActive) return null;
+  return routeFor(G.op).find((k) => G.track.st[k] === "todo") || null;
+}
+function resetTrack() {
+  const route = routeFor(G.op);
+  G.track = { st: {}, notes: {}, end: null };
+  for (const [k] of STATIONS) G.track.st[k] = route.includes(k) ? "todo" : "off";
+}
+
+// ---------------------------------------------------------------- the reader: WristbandTaps.kt
+function arm() {
+  G.armed = true; G.state = { kind: "Idle" }; G.lcd = null; resetTrack();
+}
+function afterEvent(eventKind) {
+  const s = G.state;
+  if (s.kind !== "Ended") return;
+  if (eventKind === "Detected") { say("A tap that ends at detect never switches the reader off, so it keeps listening."); return; }
+  if (s.end === "Faulted") { say("A fault keeps the reader on: the next tap can go ahead straight away.", "reader stays armed"); return; }
+  if (G.armed) { G.armed = false; say("The screen has its answer, so the reader switches off until the screen arms it again.", "reader disarmed"); }
+}
+
+function holdStart(b) {
+  if (G.held || G.sort) return;
+  const L = LEVELS[G.li];
+  const lock = L.locked && L.locked(b, G);
+  if (lock) { say(lock, null, "hint"); render(); return; }
+  G.held = b;
+  if (!G.armed) {
+    say(`Band ${b} is on the reader, but the reader is off: the screen already has its answer. Press "Next guest" to switch it back on.`, null, "warn");
+    render(); return;
+  }
+  G.tapNo += 1; G.feed.push({ tapno: `Tap ${G.tapNo} · band ${b}` });
+  resetTrack(); G.lcd = { tone: "", main: "Reading…", sub: "Keep the band still" };
+  G.stateResumed = false;
+  const r = runnerOn({ kind: "Detected", uid: UID[b] });
+  if (G.state.kind === "Detected" && G.state.unfinished) G.stateResumed = true;
+  if (r === "moved") afterEvent("Detected");
+  G.tapActive = r === "moved" && G.state.kind !== "Ended";
+  schedule(); render();
+}
+function advance() {
+  G.timer = null;
+  if (!G.held || !G.tapActive) return;
+  const s = G.state, b = G.held;
+  let ev;
+  if (s.kind === "Detected") ev = { kind: "Authenticated" };
+  else if (s.kind === "Authenticated") {
+    const onChip = { ...G.bands[b] }; delete onChip.damaged;
+    if (!onChip.id) onChip.id = UID[b];
+    ev = { kind: "Read", record: onChip, verified: !G.bands[b].damaged };
+  } else if (s.kind === "Writing") {
+    const written = { ...s.target, token: s.target.id ? mint() : "" };
+    G.bands[b] = written.id ? { ...written } : { id: "", saldo: 0, token: "", stamps: 0, minor: false };
+    ev = { kind: "Written", record: written };
+  } else { G.tapActive = false; render(); return; }
+  runnerOn(ev);
+  afterEvent(ev.kind);
+  if (G.state.kind === "Ended") G.tapActive = false;
+  schedule(); render();
+}
+function holdEnd() {
+  if (!G.held) return;
+  const b = G.held;
+  stopTimer();
+  if (G.tapActive) pulled(b);
+  G.held = null; G.tapActive = false;
+  render();
+}
+function pulled(b) {
+  const s = G.state;
+  const stage = activeStation() || "detect";
+  G.track.st[stage] = "torn";
+  G.track.end = { tone: "warn", label: "Cut short: the band left", code: "CardUnresponsive (dropped)" };
+  const journalled = s.kind === "Writing" && !!G.journal;
+  if (s.kind === "Writing") {
+    say(journalled
+      ? "The band left mid-write. The screen hears nothing (legacy never showed this). The journal still holds the plan, and the reader stays on: this band's next tap will finish it."
+      : "The band left mid-write, and nothing was journalled, so no later tap will finish this write.", "CardUnresponsive, dropped before the machine", "warn");
+  } else {
+    say("The band left before anything was decided. There's nothing to finish: the next tap starts fresh.", "CardUnresponsive, dropped before the machine", "warn");
+  }
+  G.lcd = { tone: "", main: "Hold a band here", sub: "The screen heard nothing" };
+  outcome({ t: "torn", band: b, stage, journalled });
+}
+function schedule() {
+  stopTimer();
+  if (G.manual || !G.held || !G.tapActive) return;
+  const base = G.state.kind === "Writing" ? 1600 : G.state.kind === "Detected" ? 650 : 800;
+  G.timer = setTimeout(advance, base * G.speed);
+}
+function stopTimer() { if (G.timer) { clearTimeout(G.timer); G.timer = null; } }
+
+// ---------------------------------------------------------------- goals and progress
+function outcome(o) {
+  const L = LEVELS[G.li];
+  const i = G.goals.indexOf(false);
+  if (i >= 0 && L.goals[i].test(o, G)) {
+    G.goals[i] = true;
+    say(`Goal done: ${L.goals[i].text}.`, null, "goal");
+    if (!G.goals.includes(false)) { markProgress(G.li, "goals"); say("Level complete. Answer the question in the mission card to earn the second star.", null, "goal"); }
+  } else if (i >= 0 && L.hint) {
+    const h = L.hint(o, G); if (h) say(h, null, "hint");
+  }
+}
+const STORE_KEY = "hold-the-band-v1";
+let PROG = LEVELS.map(() => ({ goals: false, quiz: false }));
+try { const s = HAS_DOM && JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (Array.isArray(s)) s.forEach((p, i) => { if (PROG[i]) Object.assign(PROG[i], p); }); } catch (e) { /* storage unavailable */ }
+function markProgress(i, key) {
+  PROG[i][key] = true;
+  try { if (HAS_DOM) localStorage.setItem(STORE_KEY, JSON.stringify(PROG)); } catch (e) { /* storage unavailable */ }
+}
+
+function startLevel(i) {
+  stopTimer();
+  const L = LEVELS[i];
+  G.li = i; G.bands = freshBands(); G.journal = null; G.usedToken = ""; tokenSeq = 0;
+  G.feed = []; G.goals = L.goals ? L.goals.map(() => false) : []; G.quiz = null;
+  G.tapNo = 0; G.held = null; G.tapActive = false; G.journalFresh = false;
+  G.sort = L.sort ? { i: 0, picked: null, score: 0 } : null;
+  if (!L.sort) {
+    G.op = L.op; G.verdict = L.op.startsWith("CHECK_") ? "show" : "write";
+    if (L.setup) L.setup(G);
+    arm();
+    if (G.journal) G.feed.push({ text: `Earlier: a ${G.journal.operation} for band ${bandOf(G.journal.target.id)} was cut short. It is still in the journal.`, tone: "hint" });
+  }
+  if (HAS_DOM) { buildBands(); try { localStorage.setItem(STORE_KEY + "-at", String(i)); } catch (e) { /* storage unavailable */ } }
+  render(true);
+}
+
+// ---------------------------------------------------------------- rendering
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const $ = (id) => document.getElementById(id);
+let missionKey = "";
+
+function render(force) {
+  if (!HAS_DOM) return;
+  renderLevels();
+  const L = LEVELS[G.li];
+  $("stage").hidden = !!L.sort;
+  $("sort").hidden = !L.sort;
+  const key = JSON.stringify([G.li, G.goals, G.quiz, G.speed, G.sort]);
+  if (force || key !== missionKey) { missionKey = key; renderMission(); }
+  if (L.sort) { renderSort(); return; }
+  renderDevice(); renderBands(); renderTrack(); renderFeed();
+}
+
+function renderLevels() {
+  const stars = PROG.reduce((n, p) => n + (p.goals ? 1 : 0) + (p.quiz ? 1 : 0), 0);
+  $("score").textContent = `★ ${stars} of ${LEVELS.length * 2}`;
+  $("levels").innerHTML = LEVELS.map((l, i) => {
+    const p = PROG[i];
+    return `<button class="lvl" type="button" data-li="${i}" aria-current="${i === G.li}">
+      <span class="num">${i + 1}</span><span class="nm">${esc(l.name)}</span>
+      <span class="stars" aria-label="${(p.goals ? 1 : 0) + (p.quiz ? 1 : 0)} of 2 stars"><span class="${p.goals ? "got" : ""}">★</span><span class="${p.quiz ? "got" : ""}">★</span></span>
+    </button>`;
+  }).join("");
+}
+
+function renderMission() {
+  const L = LEVELS[G.li];
+  const m = $("mission");
+  if (L.sort) {
+    m.innerHTML = `<div style="display:grid;gap:10px"><span class="eyebrow">Level ${G.li + 1} of ${LEVELS.length}</span><h2>${esc(L.name)}</h2>
+      <p class="story">Every screen arms the reader with an operation, and every operation has a type. The type decides the tap's route. Name the type of eight operations from the fleet.</p></div>
+      <div class="routes">${["READ_WRITE", "WRITE", "READ", "ID"].map((t) => `<span><b>${t}</b> · ${routeFor(t === "READ_WRITE" ? "TOP_UP" : t === "WRITE" ? "ERASE" : t === "READ" ? "LINK_WAITER" : "FIND_ORDERS").map((k) => STATIONS.find((s) => s[0] === k)[1]).join(" → ")}</span>`).join("")}</div>`;
+    return;
+  }
+  const o = OPS[L.op];
+  const next = G.goals.indexOf(false);
+  const goalsHtml = L.goals.map((g, i) => `<li class="${G.goals[i] ? "done" : i === next ? "next" : ""}"><span class="box" aria-hidden="true">${G.goals[i] ? "✓" : i + 1}</span><span>${esc(g.text)}</span></li>`).join("");
+  const complete = !G.goals.includes(false);
+  let right = `<h3 class="eyebrow">Goals</h3><ol class="goals">${goalsHtml}</ol>`;
+  if (complete) {
+    const q = L.quiz, picked = G.quiz;
+    right = `<div class="done-box"><h3>Level complete</h3><ul>${L.lesson.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+      <div class="quiz"><span class="q">${esc(q.q)}</span>
+      ${q.options.map((t, i) => {
+        const cls = picked == null ? "" : i === q.right ? "right" : i === picked ? "wrong" : "";
+        return `<button class="opt ${cls}" type="button" data-opt="${i}" ${picked != null ? "disabled" : ""}>${esc(t)}</button>`;
+      }).join("")}
+      ${picked != null ? `<p class="why"><b>${picked === q.right ? "Right." : "Not quite."}</b> ${esc(q.why)}</p>` : ""}
+      </div>
+      <div class="row">${G.li < LEVELS.length - 1 ? `<button class="btn primary" type="button" id="nextLevel" ${picked == null ? "disabled" : ""}>Next level: ${esc(LEVELS[G.li + 1].name)}</button>` : ""}</div></div>`;
+  }
+  m.innerHTML = `<div style="display:grid;gap:12px;align-content:start">
+      <span class="eyebrow">Level ${G.li + 1} of ${LEVELS.length}</span>
+      <h2>${esc(L.name)}</h2>
+      <p class="story">${esc(L.story)}</p>
+      <div class="facts"><span class="chip accent">${esc(L.op)}</span><span class="chip">${o.type}</span><span class="chip">${o.resumes ? "resumes" : "doesn't resume"}</span><span class="chip">${ONLY_THIS.has(L.op) ? "band A only" : "any band"}</span><span class="chip">${esc(o.screen)}</span></div>
+      <p class="howto">Press and hold a band (mouse, finger, or Space on a focused band). Let go to take it off the reader.</p>
+      <div class="row">
+        <button class="btn" type="button" id="restart">Restart level</button>
+        <button class="btn" type="button" id="spdN" aria-pressed="${G.speed === 1}">Normal speed</button>
+        <button class="btn" type="button" id="spdS" aria-pressed="${G.speed !== 1}">Slow motion</button>
+      </div>
+    </div>
+    <div style="display:grid;gap:10px;align-content:start">${right}</div>`;
+  $("restart").onclick = () => startLevel(G.li);
+  $("spdN").onclick = () => { G.speed = 1; render(); };
+  $("spdS").onclick = () => { G.speed = 2.4; render(); };
+  m.querySelectorAll(".opt").forEach((btn) => { btn.onclick = () => pickQuiz(+btn.dataset.opt); });
+  if ($("nextLevel")) $("nextLevel").onclick = () => startLevel(G.li + 1);
+}
+function pickQuiz(i) {
+  if (G.quiz != null) return;
+  G.quiz = i;
+  if (i === LEVELS[G.li].quiz.right) markProgress(G.li, "quiz");
+  render();
+}
+
+function renderDevice() {
+  const L = LEVELS[G.li];
+  $("led").className = "led" + (G.armed ? " on" : "");
+  $("ledText").textContent = G.armed ? "Reader on" : "Reader off";
+  const lcd = G.lcd || { tone: "", main: G.armed ? "Hold a band here" : "Answered", sub: G.armed ? "" : "The reader is off" };
+  const act = activeStation();
+  const live = act ? (act === "write" ? { main: "Writing…", sub: "Don't take the band away" } : { main: "Reading…", sub: "Keep the band still" }) : null;
+  $("lcd").className = "lcd " + (live ? "" : lcd.tone || "");
+  $("lcdScr").textContent = `${OPS[G.op].screen} · ${G.op}`;
+  $("lcdMain").textContent = live ? live.main : lcd.main;
+  $("lcdSub").textContent = live ? live.sub : lcd.sub || "";
+  $("lcdSaid").textContent = live ? "" : lcd.said ? "screen hears: " + lcd.said : "";
+  const r = $("reader");
+  r.className = "reader" + (G.held ? " hold" : "") + (G.held && G.tapActive ? " live" : "");
+  $("readerText").textContent = G.held
+    ? (G.tapActive ? `Band ${G.held} on the reader` : `Band ${G.held} on the reader · ${G.armed ? "tap over, let go" : "reader off"}`)
+    : (G.armed ? "Hold a band to put it here" : "Reader off");
+  const st = $("sticky");
+  st.classList.toggle("empty", !G.journal);
+  st.classList.toggle("fresh", G.journalFresh);
+  if (G.journalFresh) setTimeout(() => { G.journalFresh = false; st.classList.remove("fresh"); }, 400);
+  $("journalText").textContent = G.journal ? `${G.journal.operation} for ${summary(G.journal.target)}` : "Empty: nothing pending";
+  $("tokenText").textContent = G.usedToken ? shortTok(G.usedToken) : "none yet";
+  $("rearm").hidden = G.armed || !!L.sort;
+}
+
+function buildBands() {
+  const L = LEVELS[G.li];
+  const wrap = $("bands");
+  wrap.innerHTML = "";
+  if (L.sort) return;
+  for (const b of L.bands) {
+    const el = document.createElement("button");
+    el.type = "button"; el.className = "band"; el.dataset.band = b;
+    el.innerHTML = `<span class="chipdot" aria-hidden="true"></span><span class="bname">Band ${b}</span><span class="bdata"></span><span class="bhint"></span>`;
+    el.addEventListener("pointerdown", (e) => { if (e.button !== 0) return; e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ } el.focus(); holdStart(b); });
+    el.addEventListener("pointerup", holdEnd);
+    el.addEventListener("pointercancel", holdEnd);
+    el.addEventListener("lostpointercapture", holdEnd);
+    el.addEventListener("keydown", (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); holdStart(b); } else if (e.key === " " || e.key === "Enter") e.preventDefault(); });
+    el.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); holdEnd(); } });
+    el.addEventListener("blur", holdEnd);
+    el.addEventListener("contextmenu", (e) => e.preventDefault());
+    el.addEventListener("click", (e) => e.preventDefault());
+    wrap.appendChild(el);
+  }
+}
+function renderBands() {
+  const L = LEVELS[G.li];
+  document.querySelectorAll(".band").forEach((el) => {
+    const b = el.dataset.band, r = G.bands[b];
+    const lock = L.locked && L.locked(b, G);
+    el.classList.toggle("held", G.held === b);
+    el.classList.toggle("locked", !!lock);
+    el.classList.toggle("damaged", !!r.damaged);
+    el.querySelector(".bdata").textContent = r.damaged ? `record damaged · ${money(r.saldo)}?` : r.id ? `${money(r.saldo)} · token ${shortTok(r.token)}` : "cleared: no record";
+    el.querySelector(".bhint").textContent = lock ? "Not yet" : G.held === b ? "Let go to take it away" : "Press and hold to tap";
+    el.setAttribute("aria-label", `Band ${b}. ${el.querySelector(".bdata").textContent}. Press and hold to tap.`);
+  });
+}
+
+function renderTrack() {
+  const route = routeFor(G.op);
+  const act = activeStation();
+  const TAG = { todo: "", active: "now", done: "done", skip: "skipped", off: "not in this tap", bad: "stopped", torn: "cut short" };
+  $("routeFacts").innerHTML = `<span class="chip">${OPS[G.op].type} route · ${route.length} step${route.length > 1 ? "s" : ""}</span>`;
+  $("track").innerHTML = STATIONS.map(([k, name, plain], i) => {
+    let st = G.track.st[k];
+    if (st === "todo" && k === act) st = "active";
+    const note = G.track.notes[k] || (st === "off" ? `Not part of a ${OPS[G.op].type} tap` : plain);
+    const mark = st === "done" ? "✓" : st === "bad" ? "✕" : st === "torn" ? "!" : String(i + 1);
+    return `<li class="st ${st}"><span class="dot" aria-hidden="true">${mark}</span><div><b>${name}</b><span class="plain">${esc(note)}</span></div><span class="tag">${TAG[st]}</span></li>`;
+  }).join("");
+  const e = G.track.end;
+  $("trackEnd").innerHTML = e
+    ? `<div class="endpill ${e.tone}">${esc(e.label)}<code>${esc(e.code || "")}</code></div>`
+    : `<div class="endpill none">${G.tapActive ? "Tap in progress" : "No tap yet on this arming"}</div>`;
+}
+
+function renderFeed() {
+  const f = $("feed");
+  if (!G.feed.length) { f.innerHTML = `<p class="empty">Hold a band on the reader. Each step of the tap is explained here as it happens.</p>`; return; }
+  f.innerHTML = G.feed.map((x) => x.tapno
+    ? `<div class="tapno">${esc(x.tapno)}</div>`
+    : `<div class="say ${x.tone || ""}"><p>${esc(x.text)}</p>${x.code ? `<code>${esc(x.code)}</code>` : ""}</div>`).join("");
+  f.scrollTop = f.scrollHeight;
+}
+
+function renderSort() {
+  const S = G.sort, el = $("sort");
+  if (S.i >= SORT.length) {
+    const perfect = S.score === SORT.length;
+    el.innerHTML = `<span class="eyebrow">Result</span><div class="op">${S.score} of ${SORT.length}</div>
+      <p class="story" style="margin:0">${perfect ? "Every one right. That table is the fleet contract: taquilla, accesos and totem arm the same operations." : "The type is read from each screen's chip calls on develop. Play again to get all eight."}</p>
+      <div class="row"><button class="btn primary" type="button" id="sortAgain">Play again</button></div>`;
+    $("sortAgain").onclick = () => startLevel(G.li);
+    return;
+  }
+  const [op, why] = SORT[S.i], o = OPS[op];
+  const types = ["READ_WRITE", "WRITE", "READ", "ID"];
+  el.innerHTML = `<span class="eyebrow">Round ${S.i + 1} of ${SORT.length} · score ${S.score}</span>
+    <div><div class="op">${esc(op)}</div><span class="mono">screen: ${esc(o.screen)}</span></div>
+    <span style="font-weight:700">What kind of tap is it?</span>
+    <div class="types">${types.map((t) => {
+      const cls = S.picked == null ? "" : t === o.type ? "right" : t === S.picked ? "wrong" : "";
+      return `<button class="type ${cls}" type="button" data-type="${t}" ${S.picked != null ? "disabled" : ""}><b>${t}</b><span>${esc(TYPE_PLAIN[t])}</span></button>`;
+    }).join("")}</div>
+    ${S.picked != null ? `<p class="why" style="margin:0"><b>${S.picked === o.type ? "Right" : "It's " + o.type}.</b> ${esc(why)} <span class="chip">${o.resumes ? "resumes" : "doesn't resume"}</span></p>
+      <div class="row"><button class="btn primary" type="button" id="sortNext">${S.i + 1 < SORT.length ? "Next operation" : "See the result"}</button></div>` : ""}`;
+  el.querySelectorAll(".type").forEach((btn) => { btn.onclick = () => {
+    if (S.picked != null) return;
+    S.picked = btn.dataset.type;
+    if (S.picked === o.type) S.score += 1;
+    render();
+  }; });
+  if ($("sortNext")) $("sortNext").onclick = () => {
+    S.i += 1; S.picked = null;
+    if (S.i >= SORT.length) { markProgress(G.li, "goals"); if (S.score === SORT.length) markProgress(G.li, "quiz"); }
+    render();
+  };
+}
+
+// ---------------------------------------------------------------- wiring
+function init() {
+  $("levels").addEventListener("click", (e) => { const b = e.target.closest(".lvl"); if (b) startLevel(+b.dataset.li); });
+  $("rearm").onclick = () => { arm(); G.feed.push({ text: "The screen arms the reader again for the next guest.", code: "taps().arm(operation, screen)", tone: "" }); render(); };
+  window.addEventListener("blur", holdEnd);
+  let at = 0;
+  try { at = +(localStorage.getItem(STORE_KEY + "-at") || 0) || 0; } catch (e) { /* storage unavailable */ }
+  startLevel(Math.min(Math.max(at, 0), LEVELS.length - 1));
+}
+if (HAS_DOM) init();
+if (typeof module !== "undefined") module.exports = { G, LEVELS, SORT, startLevel, holdStart, holdEnd, advance, step, pickQuiz };
+</script>
